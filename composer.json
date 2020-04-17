@@ -4,7 +4,7 @@
         "php": ">=7.0",
         "slim/slim": "3.*",
         "ext-openssl":"*",
-        "ext-pgsql": "*"
+        "ext-pdo": "*"
     },
 
     "autoload":{

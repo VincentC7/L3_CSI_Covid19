@@ -8,14 +8,16 @@ use Slim\Http\Response;
 
 require '../vendor/autoload.php';
 
-//Eloquant::start('../conf/conf.ini');
+Eloquant::start('../conf/conf.ini');
 
-$pdo =  pg_connect('host=localhost port=5432 dbname=covid19 user=postgres password=pass');
 
 $app = new App();
 
 $app->get('/', function (Request $request, Response $response){
-
+    $liste = Patient::Select("nom")->get();
+    foreach ($liste as $p){
+        echo $p['nom']." ";
+    }
 });
 
 try {
