@@ -1,4 +1,4 @@
 /vendor/
 /.idea/
 composer.lock
-/conf/conf.ini
+conf.ini
