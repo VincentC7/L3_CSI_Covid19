@@ -10,7 +10,7 @@ require '../vendor/autoload.php';
 
 //Eloquant::start('../conf/conf.ini');
 
-$pdo =  pg_connect('host=localhost port=5432 dbname=covid19 user=postgres password=27071999');
+$pdo =  pg_connect('host=localhost port=5432 dbname=covid19 user=postgres password=pass');
 
 $app = new App();
 
