@@ -1,26 +1,36 @@
 <?php
 
+use L3_CSI_Covid19\Controller\DepartementController;
+use L3_CSI_Covid19\Controller\HomeController;
+use L3_CSI_Covid19\Controller\HopitalController;
+use L3_CSI_Covid19\Controller\PatientController;
+use L3_CSI_Covid19\Controller\StatistiquesController;
 use L3_CSI_Covid19\DB\Eloquant;
-use L3_CSI_Covid19\Model\Patient;
 use Slim\App;
-use Slim\Http\Request;
-use Slim\Http\Response;
 
 require '../vendor/autoload.php';
 
+//Démarage de la base de données
 Eloquant::start('../conf/conf.ini');
-
 
 $app = new App();
 
-$app->get('/', function (Request $request, Response $response){
-    $liste = Patient::Select("nom")->get();
-    foreach ($liste as $p){
-        echo $p['nom']." ";
-    }
-});
+require('../src/container.php');
 
-try {
-    $app->run();
-} catch (Throwable $e) {
-}
+//page de d'acceuil
+$app->get('/', HomeController::class.":home");
+
+//page de gestion des patients
+$app->get('/Patient', PatientController::class.":home");
+
+//page de gestion des hopitaux
+$app->get('/Hopitaux', HopitalController::class.":home");
+
+//page de gestion d'un département
+$app->get('/Departements', DepartementController::class.":home");
+
+//page de des statisiques
+$app->get('/Stat', StatistiquesController::class.":home");
+
+
+$app->run();
