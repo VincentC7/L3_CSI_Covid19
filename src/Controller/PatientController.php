@@ -16,4 +16,8 @@ class PatientController extends Controller {
     public function home(RequestInterface $request, ResponseInterface $response){
         $this->render($response,'pages/patient.twig');
     }
+
+    public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
+
+    }
 }
