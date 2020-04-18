@@ -18,19 +18,19 @@ $app = new App();
 require('../src/container.php');
 
 //page de d'acceuil
-$app->get('/', HomeController::class.":home");
+$app->get('/', HomeController::class.":home")->setName("home");
 
 //page de gestion des patients
-$app->get('/Patient', PatientController::class.":home");
+$app->get('/Patient', PatientController::class.":home")->setName("patient");
 
 //page de gestion des hopitaux
-$app->get('/Hopitaux', HopitalController::class.":home");
+$app->get('/Hopitaux', HopitalController::class.":home")->setName("hopitaux");
 
 //page de gestion d'un département
-$app->get('/Departements', DepartementController::class.":home");
+$app->get('/Departements', DepartementController::class.":home")->setName("departements");
 
 //page de des statisiques
-$app->get('/Stat', StatistiquesController::class.":home");
+$app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 
 
 $app->run();
