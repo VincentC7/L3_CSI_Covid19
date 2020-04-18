@@ -23,6 +23,8 @@ $app->get('/', HomeController::class.":home")->setName("home");
 //page de gestion des patients
 $app->get('/Patient', PatientController::class.":home")->setName("patient");
 $app->post('/Patient', PatientController::class.":nouveauPatient");
+$app->get('/Patient/{numsecu}', PatientController::class.":modifierPatient")->setName('modifierPatient');
+$app->post('/Patient/{numsecu}', PatientController::class.":modifierPatient");
 
 //page de gestion des hopitaux
 $app->get('/Hopitaux', HopitalController::class.":home")->setName("hopitaux");

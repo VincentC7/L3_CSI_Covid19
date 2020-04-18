@@ -1,22 +1,23 @@
 {% extends "layout.twig" %}
 
 {% block content %}
-    <div class="container">
+    <div class="w-75 m-auto">
         <h1> Ajouter un nouveau patient </h1>
-        <form>
+        <form action="{{ path_for('patient') }}" method="post">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="Input_name">Nom</label>
-                    <input type="email" class="form-control" id="Input_name" placeholder="Nom du patient">
+                    <input type="email" class="form-control" id="Input_name" placeholder="Nom du patient" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Prénom</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="Prénom du patient">
+                    <input type="password" class="form-control" id="inputPassword4" placeholder="Prénom du patient"
+                           required>
                 </div>
             </div>
             <div class="form-group">
                 <label for="input_adresse">Adresse</label>
-                <input type="text" class="form-control" id="input_adresse" placeholder="1 rue de ..."required >
+                <input type="text" class="form-control" id="input_adresse" placeholder="1 rue de ..." required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -37,7 +38,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_naiss">Date de naissance</label>
-                    <input type="date"class="form-control" id="date_naiss" required>
+                    <input type="date" class="form-control" id="date_naiss" required>
                 </div>
 
                 <div class="form-group col-md-6">
@@ -69,7 +70,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_surveillance">Début surveillance</label>
-                    <input type="date"class="form-control" id="date_surveillance" required>
+                    <input type="date" class="form-control" id="date_surveillance" required>
                 </div>
 
                 <div class="form-group col-md-6">
@@ -85,5 +86,41 @@
             </div>
             <button type="submit" class="btn btn-primary">Ajouter</button>
         </form>
+
+        <HR size="1">
+
+        <h1> Rechercher des patients </h1>
+        <div class="form-row pb-5 pt-1">
+            <form class="col-10 m-auto" action="" method="get">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <select id="oCategorie" name="oCategorie" class="form-control">
+                            <option selected="selected" value="0">Numéro de sécurité</option>
+                            <option value="1">...</option>
+                        </select>
+                    </div>
+                    <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés"
+                           required="required">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Recherche</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row justify-content-md-center">
+            {% for patient in patients %}
+                <div class="card col-3 m-1" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ patient.nom}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ patient.prenom }}</h6>
+                        <p class="card-text m-0">Date de Naissance : {{ patient.date_naissance }}</p>
+                        <p class="card-text m-0">Numéro de téléphone : {{ patient.num_tel }}</p>
+                        <p class="card-text">Etat de santé : {{ patient.etat_sante }}</p>
+                        <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">Modifier</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

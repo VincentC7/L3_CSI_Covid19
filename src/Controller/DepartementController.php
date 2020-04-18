@@ -14,6 +14,6 @@ class DepartementController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $this->render($response,'pages/departement.twig');
+        $this->render($response,'pages/departement.twig',[]);
     }
 }
