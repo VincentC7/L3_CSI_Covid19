@@ -8,14 +8,15 @@ use L3_CSI_Covid19\Controller\StatistiquesController;
 use L3_CSI_Covid19\DB\Eloquant;
 use Slim\App;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
+
 
 //Démarage de la base de données
-Eloquant::start('conf/conf.ini');
+Eloquant::start(__DIR__ . '/../conf/conf.ini');
 
 $app = new App();
 
-require('src/container.php');
+require(__DIR__ .'/../src/container.php');
 
 //page de d'acceuil
 $app->get('/', HomeController::class.":home")->setName("home");

@@ -18,6 +18,5 @@ class HopitalController extends Controller {
     }
 
     public function update(RequestInterface $request, ResponseInterface $response){
-        var_dump($_POST);
     }
 }
