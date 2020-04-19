@@ -16,4 +16,8 @@ class HopitalController extends Controller {
     public function home(RequestInterface $request, ResponseInterface $response){
         $this->render($response,'pages/hopital.twig',[]);
     }
+
+    public function update(RequestInterface $request, ResponseInterface $response){
+        var_dump($_POST);
+    }
 }

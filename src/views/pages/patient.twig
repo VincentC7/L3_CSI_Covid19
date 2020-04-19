@@ -4,46 +4,53 @@
     <div class="w-75 m-auto">
         <h1> Ajouter un nouveau patient </h1>
         <form action="{{ path_for('patient') }}" method="post">
+            <div class="form-group">
+                <label for="input_numsecu">Numéro de sécurité social</label>
+                <input type="text" class="form-control" id="input_numsecu" name="num_secu" pattern="[0-9]{15}" required>
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="Input_name">Nom</label>
-                    <input type="email" class="form-control" id="Input_name" placeholder="Nom du patient" required>
+                    <input type="text" class="form-control" id="Input_name" name="nom" placeholder="Nom du patient" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Prénom</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="Prénom du patient"
+                    <input type="text" class="form-control" id="inputPassword4" name="prenom" placeholder="Prénom du patient"
                            required>
                 </div>
             </div>
             <div class="form-group">
                 <label for="input_adresse">Adresse</label>
-                <input type="text" class="form-control" id="input_adresse" placeholder="1 rue de ..." required>
+                <input type="text" class="form-control" id="input_adresse" name="rue" placeholder="1 rue de ..." required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputVille">Ville</label>
-                    <input type="text" class="form-control" id="inputVille">
+                    <input type="text" class="form-control" name="ville" id="inputVille">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="input_departement">Département</label>
-                    <select id="input_departement" class="form-control" required>
+                    <select id="input_departement" class="form-control" name="departement" required>
                         <option selected>Selectionnez ...</option>
+                        {% for dep in departements %}
+                            <option selected="selected" value="{{dep.nodep}}">{{ dep.nomdep}}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="input_codePost">Code Postal</label>
-                    <input type="text" class="form-control" id="input_codePost" required>
+                    <input type="text" class="form-control" id="input_codePost" name="codePost" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_naiss">Date de naissance</label>
-                    <input type="date" class="form-control" id="date_naiss" required>
+                    <input type="date" class="form-control" id="date_naiss" name="date_naiss" required>
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="tel">Numéro de téléphone</label>
-                    <input type="tel" pattern="[0-9]{10}" class="form-control" id="tel" required>
+                    <input type="tel" pattern="[0-9]{10}" class="form-control" id="tel" name="tel" required>
                 </div>
             </div>
             <fieldset class="form-group">
@@ -51,15 +58,15 @@
                     <legend class="col-form-label col-sm-2 pt-0">Sexe</legend>
                     <div class="col-sm-10">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1"
-                                   value="option1" checked>
+                            <input class="form-check-input" type="radio" name="sexe" id="gridRadios1"
+                                   value="F" checked>
                             <label class="form-check-label" for="gridRadios1">
                                 Femme
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2"
-                                   value="option2">
+                            <input class="form-check-input" type="radio" name="sexe" id="gridRadios2"
+                                   value="M">
                             <label class="form-check-label" for="gridRadios2">
                                 Homme
                             </label>
@@ -70,24 +77,24 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_surveillance">Début surveillance</label>
-                    <input type="date" class="form-control" id="date_surveillance" required>
+                    <input type="datetime-local" class="form-control" id="date_surveillance" name="dateSurveillance" required>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="tel">Etat de santé</label>
-                    <select id="input_departement" class="form-control" required>
-                        <option selected>Aucun symptômes</option>
-                        <option>Fièvre</option>
-                        <option>Fièvre et problemes respiratoires</option>
-                        <option>Inconscient</option>
-                        <option>Décédé</option>
+                    <label for="Etat_sante">Etat de santé</label>
+                    <select id="Etat_sante" class="form-control" name="Etat_sante" required>
+                        <option selected>aucun symptome</option>
+                        <option>fièvre</option>
+                        <option>fièvre et pb respiratoires</option>
+                        <option>inconscient</option>
+                        <option>décédé</option>
                     </select>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <input type="submit" class="btn btn-primary" value="Ajouter">
         </form>
 
-        <HR size="1">
+        <HR>
 
         <h1> Rechercher des patients </h1>
         <div class="form-row pb-5 pt-1">
@@ -96,7 +103,7 @@
                     <div class="input-group-prepend">
                         <select id="oCategorie" name="oCategorie" class="form-control">
                             <option selected="selected" value="0">Numéro de sécurité</option>
-                            <option value="1">...</option>
+
                         </select>
                     </div>
                     <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés"

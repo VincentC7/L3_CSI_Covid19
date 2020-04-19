@@ -28,6 +28,7 @@ $app->post('/Patient/{numsecu}', PatientController::class.":modifierPatient");
 
 //page de gestion des hopitaux
 $app->get('/Hopitaux', HopitalController::class.":home")->setName("hopitaux");
+$app->post('/Hopitaux', HopitalController::class.":update")->setName("updatehopitaux");
 
 //page de gestion d'un département
 $app->get('/Departements', DepartementController::class.":home")->setName("departements");
