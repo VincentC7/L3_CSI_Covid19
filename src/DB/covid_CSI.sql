@@ -152,22 +152,27 @@ $proc_insert_hospitalise$ language plpgsql;
 
 create trigger trig_insert_hospitalise before insert on hospitalise for each row execute procedure
     proc_insert_hospitalise();
+                                            
 
                                              
-   
---procédure lors d'une déhospitalisation
-create function proc_delete_hospitalise() returns trigger as $proc_delete_hospitalise$
+ --fonction lors de update d'un patient hospitalise 
+create function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$                                    
 begin
-    update Hopital set nb_libres = nb_libres + 1 where noHopital = old.noHopital;
-    return new;
+	if (not new.fin_surveillance is null) then
+		perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);	
+	end if;
+  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;                                          
+                                             
+	return new;
 end;
-$proc_delete_hospitalise$ language plpgsql;
+$proc_upd_hospitalise$ language plpgsql;
 
-create trigger trig_delete_hospitalise before delete on hospitalise for each row execute procedure
-    proc_delete_hospitalise();                                             
+create trigger trig_upd_hospitalise before update on hospitalise for each row execute procedure
+proc_upd_hospitalise();
+                                             
+                                             
 
-
---fonction lors de update d'un patient hospitalise
+--fonction lors de l'augmentation de places supplémentaires
 create function proc_upd_hopital() returns trigger as $proc_upd_hopital$
 declare
     diff integer;
