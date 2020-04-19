@@ -197,12 +197,16 @@ create trigger trig_upd_hopital before update on hopital for each row execute pr
                          
                          
  --transfert d'un patient
-create function proc_trf_patient(oldH integer, newH integer) returns trigger as $proc_trf_patient$
+create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+declare
+   numS TEXT;
 begin
-    --a finir
-    return new;
+    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;		 
+			 
+    update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
+    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
 end;
-$proc_trf_patient$ language plpgsql;                   
+$$ language plpgsql;                   
 
                          
 
