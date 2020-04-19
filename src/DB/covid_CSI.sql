@@ -153,6 +153,18 @@ $proc_insert_hospitalise$ language plpgsql;
 create trigger trig_insert_hospitalise before insert on hospitalise for each row execute procedure
     proc_insert_hospitalise();
 
+                                             
+   
+--procédure lors d'une déhospitalisation
+create function proc_delete_hospitalise() returns trigger as $proc_delete_hospitalise$
+begin
+    update Hopital set nb_libres = nb_libres + 1 where noHopital = old.noHopital;
+    return new;
+end;
+$proc_delete_hospitalise$ language plpgsql;
+
+create trigger trig_delete_hospitalise before delete on hospitalise for each row execute procedure
+    proc_delete_hospitalise();                                             
 
 
 --fonction lors de update d'un patient hospitalise
@@ -176,8 +188,18 @@ $proc_upd_hopital$ language plpgsql;
 
 create trigger trig_upd_hopital before update on hopital for each row execute procedure
     proc_upd_hopital();
+ 
+                         
+                         
+ --transfert d'un patient
+create function proc_trf_patient(oldH integer, newH integer) returns trigger as $proc_trf_patient$
+begin
+    --a finir
+    return new;
+end;
+$proc_trf_patient$ language plpgsql;                   
 
-
+                         
 
 --Insertion des données
 
