@@ -17,4 +17,11 @@ class StatistiquesController extends Controller {
         $this->render($response,'pages/stats.twig',[]);
     }
 
+    public function global_stat(RequestInterface $request, ResponseInterface $response, $cutTime){
+        /*
+          cutTime sert a découpé les échelles de temps
+        */
+
+
+    }
 }
