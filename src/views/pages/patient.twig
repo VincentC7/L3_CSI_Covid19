@@ -164,8 +164,10 @@
                         <p class="card-text m-0">Numéro de téléphone : {{ patient.num_tel }}</p>
                         <p class="card-text mb-2">Début de surveillance : {{ patient.debut_surveillance }}</p>
                         <p class="card-text m-0">{% if patient.fin_surveillance %} Fin de surveillance : {{ patient.fin_surveillance }} {% else %} Le patient est toujours sous surveillance {% endif %}</p>
-                        <p class="card-text">Etat de santé : {{ patient.etat_sante }}</p>
+                        <p class="card-text m-0">Etat de santé : {{ patient.etat_sante }}</p>
+                        {% if patient.hospitalise %}  <p class="card-text m-0">Le patient est hospitalisé</p>{% endif %}
                         <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">Modifier</a>
+                        {% if not patient.hospitalise %}<a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="card-link">Hospitaliser</a>{% endif %}
                     </div>
                 </div>
             {% endfor %}

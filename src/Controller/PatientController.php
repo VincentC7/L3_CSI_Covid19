@@ -22,6 +22,19 @@ class PatientController extends Controller {
         $stmt_departements->execute();
         $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
         $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
+        $count=0;
+        foreach ($patients as $patient){
+            $patients[$count]['hospitalise'] = false;
+            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation from hospitalise where num_secup = ?");
+            $stmt->execute([$patient['num_secu']]);
+            $hospitalisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($hospitalisations as $hospitalisation){
+                if (is_null($hospitalisation['fin_hospitalisation'])){
+                    $patients[$count]['hospitalise'] = true;
+                }
+            }
+            $count++;
+        }
         $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements, 'message']);
     }
 
@@ -89,6 +102,10 @@ class PatientController extends Controller {
     }
 
     public function modifierPatient(RequestInterface $request, ResponseInterface $response){
+        echo "à faire";
+    }
+
+    public function hospitaliserPatient(RequestInterface $request, ResponseInterface $response){
         echo "à faire";
     }
 
