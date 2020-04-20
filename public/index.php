@@ -55,3 +55,5 @@ $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 
 
 $app->run();
+
+session_destroy();
