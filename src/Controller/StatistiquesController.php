@@ -20,8 +20,10 @@ class StatistiquesController extends Controller {
         $pdo = $this->container->get('pdo');
         $this->render($response,'pages/stats.twig');
 
-        $this->getStatPerGender($pdo, 54);
-        $this->getStatPerStatus($pdo, 54);
+        //$this->getStatPerGender($pdo, 54);
+        //$this->getStatPerStatus($pdo, 54);
+
+        echo $this->getDateDiff("2020-03-17 00:00:00", "2020-04-12 00:00:00", "%d");
     }
 
     public function getStatPerGender($pdo, $dpt){
@@ -114,6 +116,52 @@ class StatistiquesController extends Controller {
     }
 
 
+    public function getGlobalStat($intervalle, $periode){
+        if(!isset($intervalle)){
+            $stmt_patient_surv = $pdo->prepare("select fin_surveillance, etat_sante from patient where fin_surveillance is not null and fin_surveillance < ? and fin_surveillance > ? order by fin_surveillance asc");
+            $stmt_patient_surv->execute($intervalle);
+        }
+        else{
+            $stmt_patient_surv = $pdo->prepare("select fin_surveillance, etat_sante from patient where fin_surveillance is not null order by fin_surveillance asc");
+            $stmt_patient_surv->execute();
+        }
+
+        $final_status = Array();
+        $index = 0;
+        $previousDateDiff = null;
+
+        while($patient = $stmt_patient_surv->fetch()){
+            if(!isset($intervalle)){
+                $intervalle = Array();
+                $intervalle[0] = $patient['fin_surveillance'];
+            }
+
+            $currentDateDiff = $this->getDateDiff($intervalle[0], $patient['fin_surveillance'], $periode);
+
+            if($previousDateDiff != null && $currentDateDiff != $previousDateDiff)
+                $index++;
+
+            $final_status[$index][0] = $currentDateDiff;
+
+            if($patient['etat_sante'] == "décédé"){
+                $final_status[$index][1]++;
+            }
+            else{
+                $final_status[$index][2]++;
+            }
+
+            $previousDateDiff = $currentDateDiff;
+        }
+    }
+
+    public static function getDateDiff($date_1 , $date_2 , $periode){
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+
+        $interval = date_diff($datetime1, $datetime2);
+
+        return $interval->format($differenceFormat);
+    }
 
 
 
