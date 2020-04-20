@@ -26,9 +26,18 @@ class PatientController extends Controller {
     }
 
     public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
+        //Récupération de l'acces base
+        $pdo = $this->get_PDO();
+
         //Verification des champs
         $params = $request->getParams();
         $erreurs = [];
+
+
+        //Vérification du num tel, code post et num secu => bon format
+        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";;
+        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";;
+        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";;
 
         $this->est_champ_null($params['num_secu']) || $erreurs['num_secu'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['nom']) || $erreurs['nom'] = "Veuillez specifier ce champ";
@@ -40,13 +49,21 @@ class PatientController extends Controller {
         $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['sexe']) || $erreurs['sexe'] = "Veuillez specifier ce champ";
 
+        //Verification de l'existance du patient
+        if (!isset($erreurs['num_secu'])){
+            $stmt = $pdo->prepare("SELECT nom FROM patient WHERE num_secu = ? ");
+            $stmt->execute([$params['num_secu']]);
+            !isset($stmt->fetch()['nom']) ||  $erreurs['num_secu'] = "Ce patient existe déjà";
+        }
+
+
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
             $this->afficher_message($erreurs,'erreurs');
             return $this->redirect($response,'patient');
         }
 
-        $pdo = $this->get_PDO();
+
         $stmt = $pdo->prepare("INSERT INTO patient (num_secu, nom, prenom, sexe, date_naissance, num_tel, ruep, villep, codepostp, debut_surveillance, fin_surveillance, etat_sante, nodep) VALUES (?,?,?,?,?,?,?,?,?,?,NULL,?,?)");
         $num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
         $nom = filter_var($params['nom'],FILTER_SANITIZE_STRING);

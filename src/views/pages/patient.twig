@@ -18,7 +18,7 @@
         <form action="{{ path_for('patient') }}" method="post">
             <div class="form-group">
                 <label for="input_numsecu">Numéro de sécurité social</label>
-                <input type="text" class="form-control {% if message.erreurs.num_secu %}border border-danger{% endif %}" id="input_numsecu" name="num_secu" pattern="[0-9]{15}" >
+                <input type="text" class="form-control {% if message.erreurs.num_secu %}border border-danger{% endif %}" id="input_numsecu" name="num_secu">
                 {% if message.erreurs.num_secu %}
                     <span class="help-block text-danger"> {{ message.erreurs.num_secu }}</span>
                 {% endif %}
@@ -85,7 +85,7 @@
 
                 <div class="form-group col-md-6">
                     <label for="tel">Numéro de téléphone</label>
-                    <input type="tel" pattern="[0-9]{10}" class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}" id="tel" name="tel" >
+                    <input type="tel"  class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}" id="tel" name="tel" >
                     {% if message.erreurs.tel %}
                         <span class="help-block text-danger"> {{ message.erreurs.tel }}</span>
                     {% endif %}

@@ -10,8 +10,8 @@ use Slim\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-session_start();
 
+session_start();
 $app = new App([
     'settings' => [
         'displayErrorDetails' => true
@@ -48,5 +48,3 @@ $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 
 
 $app->run();
-
-session_destroy();
