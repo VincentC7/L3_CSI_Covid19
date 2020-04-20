@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 
 
 class Controller {
-    private $container;
+    protected $container;
 
     /**
      * Controller constructor.

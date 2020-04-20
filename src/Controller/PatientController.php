@@ -5,8 +5,10 @@ namespace L3_CSI_Covid19\Controller;
 
 
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Capsule\Manager as DB;
 use L3_CSI_Covid19\Model\Departement;
 use L3_CSI_Covid19\Model\Patient;
+use PDO;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Respect\Validation\Validator;
@@ -18,8 +20,15 @@ class PatientController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $patients = Patient::Select("*")->get();
-        $departements = Departement::Select("nodep","nomdep")->get();
+        $pdo = $this->container->get('pdo');
+        $stmt_patients = $pdo->prepare("Select * from patient");
+        $stmt_departements = $pdo->prepare("Select * from departement");
+        $stmt_patients->execute();
+        $stmt_departements->execute();
+
+        $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
+        $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
+
         $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements, 'message']);
     }
 
@@ -48,6 +57,7 @@ class PatientController extends Controller {
             return $this->redirect($response,'patient');
         }
 
+        /*
 
         $patient = new Patient();
         $patient->num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
@@ -69,6 +79,7 @@ class PatientController extends Controller {
         }catch (QueryException $e){
             $this->afficher_message('Les information du patient ne sont pas corrects', 'echec');
         }
+        */
         return $this->redirect($response,'patient');
     }
 
