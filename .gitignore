@@ -2,3 +2,4 @@
 /.idea/
 composer.lock
 conf.ini
+package-lock.json

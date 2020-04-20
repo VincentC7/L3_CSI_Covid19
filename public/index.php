@@ -5,15 +5,13 @@ use L3_CSI_Covid19\Controller\HomeController;
 use L3_CSI_Covid19\Controller\HopitalController;
 use L3_CSI_Covid19\Controller\PatientController;
 use L3_CSI_Covid19\Controller\StatistiquesController;
-use L3_CSI_Covid19\DB\BD;
-use L3_CSI_Covid19\DB\Eloquant;
 use L3_CSI_Covid19\Middleware\ErreurMiddleware;
 use Slim\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-session_start();
 
+session_start();
 $app = new App([
     'settings' => [
         'displayErrorDetails' => true
@@ -22,15 +20,13 @@ $app = new App([
 
 require(__DIR__ .'/../src/container.php');
 
-$container = $app->getContainer();
 
+$container = $app->getContainer();
 // ==================== middleware ====================
 $app->add(new ErreurMiddleware($container->get('view')->getEnvironment()));
 
 
 // ==================== routes ====================
-
-
 //page de d'acceuil
 $app->get('/', HomeController::class.":home")->setName("home");
 
@@ -39,6 +35,8 @@ $app->get('/Patient', PatientController::class.":home")->setName("patient");
 $app->post('/Patient', PatientController::class.":nouveauPatient");
 $app->get('/Patient/{numsecu}', PatientController::class.":modifierPatient")->setName('modifierPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":modifierPatient");
+$app->get('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient")->setName('hospitaliserPatient');
+$app->post('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient");
 
 //page de gestion des hopitaux
 $app->get('/Hopitaux', HopitalController::class.":home")->setName("hopitaux");
@@ -52,5 +50,3 @@ $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 
 
 $app->run();
-
-session_destroy();
