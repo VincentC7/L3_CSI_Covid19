@@ -14,7 +14,7 @@ class HopitalController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $this->render($response,'pages/hopital.twig',[]);
+        $this->render($response,'pages/hopital.twig');
     }
 
     public function update(RequestInterface $request, ResponseInterface $response){

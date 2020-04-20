@@ -12,6 +12,7 @@ class HomeController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $this->render($response,'pages/home.twig',[]);
+        $this->render($response,'pages/home.twig');
     }
+
 }

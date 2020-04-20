@@ -4,7 +4,8 @@
         "php": ">=7.0",
         "slim/slim": "3.5.*",
         "ext-openssl":"*",
-        "slim/twig-view": "^2.1"
+        "slim/twig-view": "^2.1",
+        "respect/validation": "^2.0"
     },
 
     "autoload":{
