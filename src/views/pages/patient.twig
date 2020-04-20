@@ -3,57 +3,95 @@
 {% block content %}
     <div class="w-75 m-auto">
         <h1> Ajouter un nouveau patient </h1>
+        {% if message.valide%}
+            <div class="alert alert-success">
+               {{ message.valide }}
+            </div>
+        {% endif %}
+
+        {% if message.echec%}
+            <div class="alert alert-danger">
+                {{ message.echec }}
+            </div>
+        {% endif %}
+
         <form action="{{ path_for('patient') }}" method="post">
             <div class="form-group">
                 <label for="input_numsecu">Numéro de sécurité social</label>
-                <input type="text" class="form-control" id="input_numsecu" name="num_secu" pattern="[0-9]{15}" required>
+                <input type="text" class="form-control {% if message.erreurs.num_secu %}border border-danger{% endif %}" id="input_numsecu" name="num_secu" pattern="[0-9]{15}" >
+                {% if message.erreurs.num_secu %}
+                    <span class="help-block text-danger"> {{ message.erreurs.num_secu }}</span>
+                {% endif %}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="Input_name">Nom</label>
-                    <input type="text" class="form-control" id="Input_name" name="nom" placeholder="Nom du patient" required>
+                    <input type="text" class="form-control  {% if message.erreurs.nom %}border border-danger{% endif %}" id="Input_name" name="nom" placeholder="Nom du patient" >
+                    {% if message.erreurs.nom %}
+                        <span class="help-block text-danger"> {{ message.erreurs.nom }}</span>
+                    {% endif %}
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Prénom</label>
-                    <input type="text" class="form-control" id="inputPassword4" name="prenom" placeholder="Prénom du patient"
-                           required>
+                    <input type="text" class="form-control  {% if message.erreurs.prenom %}border border-danger{% endif %}" id="inputPassword4" name="prenom" placeholder="Prénom du patient">
+                    {% if message.erreurs.prenom %}
+                        <span class="help-block text-danger"> {{ message.erreurs.prenom }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form-group">
                 <label for="input_adresse">Adresse</label>
-                <input type="text" class="form-control" id="input_adresse" name="rue" placeholder="1 rue de ..." required>
+                <input type="text" class="form-control {% if message.erreurs.rue %}border border-danger{% endif %}" id="input_adresse" name="rue" placeholder="1 rue de ..." >
+                {% if message.erreurs.rue %}
+                    <span class="help-block text-danger"> {{ message.erreurs.rue }}</span>
+                {% endif %}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputVille">Ville</label>
-                    <input type="text" class="form-control" name="ville" id="inputVille">
+                    <input type="text" class="form-control  {% if message.erreurs.ville %}border border-danger{% endif %}" name="ville" id="inputVille">
+                    {% if message.erreurs.ville %}
+                        <span class="help-block text-danger"> {{ message.erreurs.ville }}</span>
+                    {% endif %}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="input_departement">Département</label>
-                    <select id="input_departement" class="form-control" name="departement" required>
+                    <select id="input_departement" class="form-control  {% if message.erreurs.departement %}border border-danger{% endif %}" name="departement" >
                         <option selected>Selectionnez ...</option>
                         {% for dep in departements %}
-                            <option selected="selected" value="{{dep.nodep}}">{{ dep.nomdep}}</option>
+                            <option value="{{dep.nodep}}">{{ dep.nomdep}}</option>
                         {% endfor %}
                     </select>
+                    {% if message.erreurs.departement %}
+                        <span class="help-block text-danger"> {{ message.erreurs.departement }}</span>
+                    {% endif %}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     <label for="input_codePost">Code Postal</label>
-                    <input type="text" class="form-control" id="input_codePost" name="codePost" required>
+                    <input type="text" class="form-control {% if message.erreurs.codePost %}border border-danger{% endif %}" id="input_codePost" name="codePost" >
+                    {% if message.erreurs.codePost %}
+                        <span class="help-block text-danger"> {{ message.erreurs.codePost }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_naiss">Date de naissance</label>
-                    <input type="date" class="form-control" id="date_naiss" name="date_naiss" required>
+                    <input type="date" class="form-control {% if message.erreurs.date_naiss %}border border-danger{% endif %}" id="date_naiss" name="date_naiss" >
+                    {% if message.erreurs.date_naiss %}
+                        <span class="help-block text-danger"> {{ message.erreurs.date_naiss }}</span>
+                    {% endif %}
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="tel">Numéro de téléphone</label>
-                    <input type="tel" pattern="[0-9]{10}" class="form-control" id="tel" name="tel" required>
+                    <input type="tel" pattern="[0-9]{10}" class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}" id="tel" name="tel" >
+                    {% if message.erreurs.tel %}
+                        <span class="help-block text-danger"> {{ message.erreurs.tel }}</span>
+                    {% endif %}
                 </div>
             </div>
-            <fieldset class="form-group">
+            <fieldset class="form-group ">
                 <div class="row">
                     <legend class="col-form-label col-sm-2 pt-0">Sexe</legend>
                     <div class="col-sm-10">
@@ -77,12 +115,15 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="date_surveillance">Début surveillance</label>
-                    <input type="datetime-local" class="form-control" id="date_surveillance" name="dateSurveillance" required>
+                    <input type="datetime-local" class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}" id="date_surveillance" name="dateSurveillance" >
+                    {% if message.erreurs.tel %}
+                        <span class="help-block text-danger"> {{ message.erreurs.tel }}</span>
+                    {% endif %}
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="Etat_sante">Etat de santé</label>
-                    <select id="Etat_sante" class="form-control" name="Etat_sante" required>
+                    <select id="Etat_sante" class="form-control" name="Etat_sante" >
                         <option selected>aucun symptome</option>
                         <option>fièvre</option>
                         <option>fièvre et pb respiratoires</option>
@@ -103,11 +144,9 @@
                     <div class="input-group-prepend">
                         <select id="oCategorie" name="oCategorie" class="form-control">
                             <option selected="selected" value="0">Numéro de sécurité</option>
-
                         </select>
                     </div>
-                    <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés"
-                           required="required">
+                    <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit">Recherche</button>
                     </div>
@@ -123,6 +162,8 @@
                         <h6 class="card-subtitle mb-2 text-muted">{{ patient.prenom }}</h6>
                         <p class="card-text m-0">Date de Naissance : {{ patient.date_naissance }}</p>
                         <p class="card-text m-0">Numéro de téléphone : {{ patient.num_tel }}</p>
+                        <p class="card-text mb-2">Début de surveillance : {{ patient.debut_surveillance }}</p>
+                        <p class="card-text m-0">{% if patient.fin_surveillance %} Fin de surveillance : {{ patient.fin_surveillance }} {% else %} Le patient est toujours sous surveillance {% endif %}</p>
                         <p class="card-text">Etat de santé : {{ patient.etat_sante }}</p>
                         <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">Modifier</a>
                     </div>

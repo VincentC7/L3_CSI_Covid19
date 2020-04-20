@@ -20,10 +20,21 @@ class Controller {
     /**
      * @param ResponseInterface $response
      * @param $file
-     * @param null $args
+     * @param $args
      */
-    public function render(ResponseInterface $response, $file, $args){
+    public function render(ResponseInterface $response, $file, $args = []){
         $this->container->view->render($response,$file, $args);
+    }
+
+    public function redirect(ResponseInterface $response, $nom){
+        return $response->withStatus(302)->withHeader('Location', $this->container->router->pathFor($nom));
+    }
+
+    public function afficher_message($message, $type = 'valide'){
+        if (!isset($_SESSION['message'])){
+            $_SESSION['message'] = [];
+        }
+        $_SESSION['message'][$type] = $message;
     }
 
 }

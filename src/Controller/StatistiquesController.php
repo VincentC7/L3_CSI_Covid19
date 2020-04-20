@@ -14,7 +14,7 @@ class StatistiquesController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $this->render($response,'pages/stats.twig',[]);
+        $this->render($response,'pages/stats.twig');
     }
 
     public function global_stat(RequestInterface $request, ResponseInterface $response, $cutTime){
