@@ -24,6 +24,7 @@ class PatientController extends Controller {
     }
 
     public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
+        //Verification des champs
         $params = $request->getParams();
         $erreurs = [];
 
@@ -37,14 +38,16 @@ class PatientController extends Controller {
         $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['sexe']) || $erreurs['sexe'] = "Veuillez specifier ce champ";
 
+        $patient =Patient::Select("nom")->where("num_secu","=",$params['num_secu'])->first();
+        var_dump($patient['nom']);
+        var_dump(isset($patient->nom));
+        die();
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
             $this->afficher_message($erreurs,'erreurs');
             return $this->redirect($response,'patient');
         }
 
-        //Validator::date('yyyy/mm/dd')->validate($params['date_naiss']) || $erreurs['date_naiss'] = "Veuillez specifier le champ";
-        //Validator::date('dd/mm/yyyy h:m')->validate($params['dateSurveillance']) || $erreurs['dateSurveillance'] = "Veuillez specifier le champ";
 
         $patient = new Patient();
         $patient->num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
