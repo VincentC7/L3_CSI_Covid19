@@ -3,11 +3,6 @@
 
 namespace L3_CSI_Covid19\Controller;
 
-
-use Illuminate\Database\QueryException;
-use Illuminate\Database\Capsule\Manager as DB;
-use L3_CSI_Covid19\Model\Departement;
-use L3_CSI_Covid19\Model\Patient;
 use PDO;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +15,7 @@ class PatientController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $pdo = $this->container->get('pdo');
+        $pdo = $this->get_PDO();
         $stmt_patients = $pdo->prepare("Select * from patient");
         $stmt_departements = $pdo->prepare("Select * from departement");
         $stmt_patients->execute();
@@ -47,10 +42,6 @@ class PatientController extends Controller {
         $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['sexe']) || $erreurs['sexe'] = "Veuillez specifier ce champ";
 
-        $patient =Patient::Select("nom")->where("num_secu","=",$params['num_secu'])->first();
-        var_dump($patient['nom']);
-        var_dump(isset($patient->nom));
-        die();
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
             $this->afficher_message($erreurs,'erreurs');

@@ -6,7 +6,7 @@ use Slim\Views\TwigExtension;
 
 $container = $app->getContainer();
 
-$container['pdo'] = function ($container){
+$container['pdo'] = function ($container) : PDO {
     $db_info = parse_ini_file(__DIR__ . '/../conf/conf.ini');
     try{
         $pdo = new PDO($db_info['driver'].":host=" . $db_info['host'] . ";dbname=" . $db_info['database'] ,$db_info['username'],$db_info['password']);

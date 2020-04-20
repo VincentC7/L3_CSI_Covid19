@@ -3,6 +3,7 @@
 
 namespace L3_CSI_Covid19\Controller;
 
+use PDO;
 use Psr\Http\Message\ResponseInterface;
 
 
@@ -35,6 +36,10 @@ class Controller {
             $_SESSION['message'] = [];
         }
         $_SESSION['message'][$type] = $message;
+    }
+
+    public function get_PDO() : PDO {
+        return $this->container->pdo;
     }
 
 }

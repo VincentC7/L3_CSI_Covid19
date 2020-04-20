@@ -5,8 +5,6 @@ use L3_CSI_Covid19\Controller\HomeController;
 use L3_CSI_Covid19\Controller\HopitalController;
 use L3_CSI_Covid19\Controller\PatientController;
 use L3_CSI_Covid19\Controller\StatistiquesController;
-use L3_CSI_Covid19\DB\BD;
-use L3_CSI_Covid19\DB\Eloquant;
 use L3_CSI_Covid19\Middleware\ErreurMiddleware;
 use Slim\App;
 
