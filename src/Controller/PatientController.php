@@ -20,10 +20,8 @@ class PatientController extends Controller {
         $stmt_departements = $pdo->prepare("Select * from departement");
         $stmt_patients->execute();
         $stmt_departements->execute();
-
         $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
         $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
-
         $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements, 'message']);
     }
 
@@ -48,29 +46,28 @@ class PatientController extends Controller {
             return $this->redirect($response,'patient');
         }
 
-        /*
+        $pdo = $this->get_PDO();
+        $stmt = $pdo->prepare("INSERT INTO patient (num_secu, nom, prenom, sexe, date_naissance, num_tel, ruep, villep, codepostp, debut_surveillance, fin_surveillance, etat_sante, nodep) VALUES (?,?,?,?,?,?,?,?,?,?,NULL,?,?)");
+        $num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
+        $nom = filter_var($params['nom'],FILTER_SANITIZE_STRING);
+        $prenom = filter_var($params['prenom'],FILTER_SANITIZE_STRING);
+        $ruep = filter_var($params['rue'],FILTER_SANITIZE_STRING);
+        $villep = filter_var($params['ville'],FILTER_SANITIZE_STRING);
+        $codepostp = filter_var($params['codePost'],FILTER_SANITIZE_STRING);
+        $date_naissance = filter_var($params['date_naiss'],FILTER_SANITIZE_STRING);
+        $num_tel = filter_var($params['tel'],FILTER_SANITIZE_STRING);
+        $debut_surveillance = filter_var($params['dateSurveillance'],FILTER_SANITIZE_STRING);
+        $etat_sante = filter_var($params['Etat_sante'],FILTER_SANITIZE_STRING);
+        $nodep = filter_var($params['departement'],FILTER_SANITIZE_STRING);
+        $sexe = filter_var($params['sexe'],FILTER_SANITIZE_STRING);
 
-        $patient = new Patient();
-        $patient->num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
-        $patient->nom = filter_var($params['nom'],FILTER_SANITIZE_STRING);
-        $patient->prenom = filter_var($params['prenom'],FILTER_SANITIZE_STRING);
-        $patient->ruep = filter_var($params['rue'],FILTER_SANITIZE_STRING);
-        $patient->villep = filter_var($params['ville'],FILTER_SANITIZE_STRING);
-        $patient->codepostp = filter_var($params['codePost'],FILTER_SANITIZE_STRING);
-        $patient->date_naissance = filter_var($params['date_naiss'],FILTER_SANITIZE_STRING);
-        $patient->num_tel = filter_var($params['tel'],FILTER_SANITIZE_STRING);
-        $patient->debut_surveillance = filter_var($params['dateSurveillance'],FILTER_SANITIZE_STRING);
-        $patient->etat_sante = filter_var($params['Etat_sante'],FILTER_SANITIZE_STRING);
-        $patient->nodep = filter_var($params['departement'],FILTER_SANITIZE_STRING);
-        $patient->sexe = filter_var($params['sexe'],FILTER_SANITIZE_STRING);
-
-        try{
-            $patient->save();
+        $resultat = $stmt->execute([$num_secu,$nom,$prenom,$sexe,$date_naissance,$num_tel,$ruep,$villep,$codepostp,$debut_surveillance,$etat_sante,$nodep]);
+        if ($resultat) {
             $this->afficher_message('Le patient a bien été crée');
-        }catch (QueryException $e){
+        }else{
             $this->afficher_message('Les information du patient ne sont pas corrects', 'echec');
         }
-        */
+
         return $this->redirect($response,'patient');
     }
 

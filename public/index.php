@@ -20,15 +20,13 @@ $app = new App([
 
 require(__DIR__ .'/../src/container.php');
 
-$container = $app->getContainer();
 
+$container = $app->getContainer();
 // ==================== middleware ====================
 $app->add(new ErreurMiddleware($container->get('view')->getEnvironment()));
 
 
 // ==================== routes ====================
-
-
 //page de d'acceuil
 $app->get('/', HomeController::class.":home")->setName("home");
 

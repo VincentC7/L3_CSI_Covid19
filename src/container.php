@@ -19,10 +19,12 @@ $container['pdo'] = function ($container) : PDO {
 $container['view'] = function ($container) {
     $dir = dirname(__DIR__);
     $view = new \Slim\Views\Twig($dir . '/src/views', [
-        'cache' => false //$dir . '/tmp/cache'
+        'cache' => false, //$dir . '/tmp/cache'
+        'debug' => true
     ]);
+    $view->addExtension(new \Twig\Extension\DebugExtension());
 
-    $router = $container->get('router');
+    $router = $container->router;
     $uri = Uri::createFromEnvironment(new Environment($_SERVER));
     $view->addExtension(new TwigExtension($router, $uri));
 
