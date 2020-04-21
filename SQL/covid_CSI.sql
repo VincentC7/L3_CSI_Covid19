@@ -62,7 +62,9 @@ $$ language plpgsql;
 
 --fonction lors de update dans patient
 create function proc_upd_patient() returns trigger as $proc_upd_patient$
+declare
 begin
+
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
         raise exception 'le patient a été réanimé ?';
     end if;
@@ -75,6 +77,10 @@ begin
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
+    end if;
+
+    if (new.etat_sante = 'décédé') then
+        update Hospitalise set fin_hospitalisation = null where Hospitalise.num_secuP = new.num_secu;
     end if;
     return new;
 end;
