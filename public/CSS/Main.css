@@ -1,7 +1,11 @@
-.patient{
+.patient, .hopital{
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
     background-color: #f6f8fa;
+}
+
+.hopital{
+    display: flex;
 }
 
 .info-patient{
@@ -19,13 +23,14 @@
     border-radius: 0.5em;
 }
 
-.nom-patient{
+.nom-patient, .nom-hopital{
     font-size: 20px;
     margin-right: 0.35em;
     font-weight: bold;
+    align-self: center;
 }
 
-.prenom-patient{
+.prenom-patient, .ville-hopital{
     height: fit-content;
     font-size: 20px;
     margin-right: 0.35em;
@@ -64,4 +69,29 @@
 
 .icon:hover{
     background-color: #ecf0f1;
+}
+
+.info-hopital{
+    width: 100%;
+}
+
+.statut-hopital{
+    width: 100%;
+    align-self: center;
+    text-align: end;
+}
+
+.effectif-hopital{
+    border: 1px solid rgba(0,0,0,.125);
+    border-top: 0px;
+    border-radius: 0 0 .25rem .25rem;
+    background-color: #f6f8fa;
+}
+
+.hopital:hover{
+    background-color: #bdc3c7;
+}
+
+.hidden{
+    display: none;
 }

@@ -14,7 +14,7 @@ class PatientController extends Controller {
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */
-    public function home(RequestInterface $request, ResponseInterface $response){
+    public function index(RequestInterface $request, ResponseInterface $response){
         $pdo = $this->get_PDO();
         $stmt_patients = $pdo->prepare("Select * from patient");
         $stmt_departements = $pdo->prepare("Select * from departement");
@@ -40,7 +40,7 @@ class PatientController extends Controller {
         $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements]);
     }
 
-    public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
+    public function new(RequestInterface $request, ResponseInterface $response){
         //Récupération de l'acces base
         $pdo = $this->get_PDO();
 
@@ -114,7 +114,7 @@ class PatientController extends Controller {
         $this->render($response,'pages/modifier_patient.twig', ['patient' =>  $patient, 'departements' =>$departements]);
     }
 
-    public function modifierPatient(RequestInterface $request, ResponseInterface $response, $args){
+    public function update(RequestInterface $request, ResponseInterface $response, $args){
         //Récupération de l'acces base
         $pdo = $this->get_PDO();
 
