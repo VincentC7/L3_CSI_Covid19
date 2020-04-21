@@ -1,5 +1,62 @@
 {% extends "layout.twig"%}
 
 {% block content %}
+    <h1> Rechercher un hopital </h1>
+    {% if message.valide %}
+        <div class="alert alert-success">
+            {{ message.valide }}
+        </div>
+    {% endif %}
 
+    {% if message.echec %}
+        <div class="alert alert-danger">
+            {{ message.echec }}
+        </div>
+    {% endif %}
+    <div class="form-row pb-5 pt-1">
+        <form class="col-10 m-auto" action="" method="get">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <select id="oCategorie" name="oCategorie" class="form-control">
+                        <option selected="selected" value="0">Nom de l'hopital</option>
+                        <option value="0">Departement</option>
+                    </select>
+                </div>
+                <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Recherche</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% for hopital in hopitaux %}
+        <div class="row justify-content-md-center mb-3" id="hopital-{{ hopital.nohopital }}">
+            <div class=" p-2 hopital col-12">
+                <div class="info-hopital col-9">
+                    <div class="nom-hopital"> {{ hopital.nomhop }} </div>
+                    <div class="adr-hopital"> {{ hopital.rueh }} {{ hopital.villeh }}, {{ hopital.codeposth }}</div>
+                </div>
+                <div class="statut-hopital col-3">
+                    <div class="capa-hopital"> Nombre de personnes dans l'hopital : {{(hopital.places_actuelles) }}/{{hopital.places_tot}} </div>
+                </div>
+            </div>
+            <div class="effectif-hopital justify-content-md-center row col-12 p-2">
+                <div class="info-effectif-patient col-6">
+                    <div class=""> Departement :  {{ hopital.nomdep }}</div>
+                    <div class=""> Places libre dans l'hopital : {{ hopital.nb_libres }} </div>
+                    <div class=""> Capacité d'acceuil de l'hopital : {{ hopital.nb_places }} </div>
+                    <div class=""> Capacité d'acceuil supplementaire l'hopital : {{ hopital.nb_supplementaire }} </div>
+                </div>
+                <div class="col-6 mt-auto mb-auto">
+                    <form action="{{ path_for('modifier_hopital', {nohopital: hopital.nohopital}) }}" method="post">
+                        <label for="input_nbplaces">Modifier le nombre de places supplémentaires d'un hopital</label>
+                        <div class="d-flex">
+                            <input type="number" class="form-control col-3" id="input_nbplaces" name="nb_places" value="{{ hopital.nb_supplementaire }}">
+                            <input type="submit" class="ml-3 btn btn-primary " value="Mettre à jour">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
