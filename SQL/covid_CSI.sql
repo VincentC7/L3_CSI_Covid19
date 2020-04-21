@@ -164,10 +164,10 @@ create trigger trig_insert_hospitalise before insert on hospitalise for each row
  --fonction lors de update d'un patient hospitalise 
 create or replace function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
 begin
-	if (not new.fin_surveillance is null) then
-		perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);	
+	if (not new.fin_hospitalisation is null) then
+		perform f_check_date_deb_sup_fin(old.debut_hospitalisation, new.fin_hospitalisation);
 	end if;
-  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;                                          
+  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;
                                              
 	return new;
 end;

@@ -34,7 +34,7 @@ $app->get('/', HomeController::class.":home")->setName("home");
 $app->get('/Patient', PatientController::class.":index")->setName("patient");
 $app->post('/Patient', PatientController::class.":new");
 
-$app->get('/Patient/{numsecu}', PatientController::class.":afficher_modifier_patient")->setName('modifierPatient');
+$app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
 
 $app->get('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient")->setName('hospitaliserPatient');

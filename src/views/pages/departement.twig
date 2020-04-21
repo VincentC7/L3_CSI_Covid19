@@ -32,16 +32,16 @@
     <p> Cliquez sur un élement pour le modifier</p>
     <hr>
     {% for dep in departements %}
-        <div class="row justify-content-md-center mb-3" id="hopital-{{ dep.nodep }}">
+        <div class="row justify-content-md-center mb-3" id="departement-{{ dep.nodep }}">
             <div class="p-2 departement col-12">
                 <div class="info-dep col-4">
-                    <div class="nom-hopital"> {{ dep.nomdep }} ({{ dep.nodep }})</div>
+                    <div class="nom-departement"> {{ dep.nomdep }} ({{ dep.nodep }})</div>
                 </div>
                 <div class="statut-dep col-8">
                     <div class=""> Seuil de personnes contaminées : {{ dep.seuil_contamine }}  </div>
                 </div>
             </div>
-            <div class="hidden effectif-hopital justify-content-md-center row col-12 p-2">
+            <div class="hidden modif-departement justify-content-md-center row col-12 p-2">
                 <form action="{{ path_for('modifier_departement', {departement: dep.nodep}) }}" method="post">
                     <div class="d-flex">
                         <label for="input_seuil" class="col-6 mt-auto">Modifier le seuil du département</label>

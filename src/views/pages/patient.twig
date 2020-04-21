@@ -168,7 +168,7 @@
     </div>
 
     {% for patient in patients %}
-        <div class="row mb-3 p-2 patient">
+        <div class="d-flex mb-3 p-2 patient">
             <div class="col-10 info-patient">
                 <div class="nom-patient">{{ patient.nom }}</div>
                 <div class="prenom-patient bottom">{{ patient.prenom }}</div>
@@ -183,7 +183,7 @@
                 </div>
             </div>
             <div class="col-2 controls">
-                <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">
+                <a href="{{ path_for('voirPatient', {numsecu: patient.num_secu}) }}" class="">
                     <svg xmlns="http://www.w3.org/2000/svg" id="Capa_1" enable-background="new 0 0 524.235 524.235"
                          height="512px" viewBox="0 0 524.235 524.235" width="512px" class="icon">
                         <g>
@@ -192,7 +192,7 @@
                         </g>
                     </svg>
                     {% if not patient.hospitalise %}
-                        <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="card-link">
+                        <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="">
                             <?xml version="1.0"?>
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"

@@ -1,4 +1,4 @@
-.patient, .hopital, .departement{
+.patient, .hopital, .departement, .hospitalisation{
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
     background-color: #f6f8fa;
@@ -55,7 +55,7 @@
 
 .controls{
     width: fit-content;
-    text-align: center;
+    text-align: end;
 }
 
 .icon{
@@ -81,7 +81,7 @@
     text-align: end;
 }
 
-.effectif-hopital{
+.effectif-hopital, .modif-departement{
     border: 1px solid rgba(0,0,0,.125);
     border-top: 0px;
     border-radius: 0 0 .25rem .25rem;
@@ -92,6 +92,11 @@
     background-color: #bdc3c7;
 }
 
+.currentHosp{
+    align-self: center;
+}
+
 .hidden{
     display: none;
 }
+
