@@ -1,0 +1,98 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+    <div class="w-75 m-auto">
+        <div>
+            <h2>{{ patient.nom }}</h2>
+            <h5>{{ patient.prenom }}</h5>
+            <div> Numéro de sécurité social : {{ patient.num_secu }}</div>
+            <div> Date naissance : {{ patient.date_naissance }}</div>
+            <div> Sexe : {% if patient.sexe == 'M' %} Homme {% else %} Femme{% endif %}</div>
+            {% if not patient.fin_surveillance %}
+                <div> Le patient est en observation depuis le : {{ patient.debut_surveillance }} </div>
+            {% endif %}
+        </div>
+        <HR>
+        {% if message.valide%}
+            <div class="alert alert-success">
+                {{ message.valide }}
+            </div>
+        {% endif %}
+
+        {% if message.echec%}
+            <div class="alert alert-danger">
+                {{ message.echec }}
+            </div>
+        {% endif %}
+        <form action="{{ path_for('modifierPatient',{numsecu: patient.num_secu}) }}" method="post">
+            <div class="form-group">
+                <label for="input_adresse">Adresse</label>
+                <input type="text" class="form-control {% if message.erreurs.rue %}border border-danger{% endif %}" id="input_adresse" name="rue" value="{{ patient.ruep }}" >
+                {% if message.erreurs.rue %}
+                    <span class="help-block text-danger"> {{ message.erreurs.rue }}</span>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputVille">Ville</label>
+                    <input type="text" class="form-control  {% if message.erreurs.ville %}border border-danger{% endif %}" name="ville" id="inputVille" value="{{ patient.villep }}">
+                    {% if message.erreurs.ville %}
+                        <span class="help-block text-danger"> {{ message.erreurs.ville }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="input_departement">Département</label>
+                    <select id="input_departement" class="form-control  {% if message.erreurs.departement %}border border-danger{% endif %}" name="departement" >
+                        <option selected>Selectionnez ...</option>
+                        {% for dep in departements %}
+                            <option {% if patient.nodep == dep.nodep %} selected {% endif %}value="{{dep.nodep}}">{{ dep.nomdep}}</option>
+                        {% endfor %}
+                    </select>
+                    {% if message.erreurs.departement %}
+                        <span class="help-block text-danger"> {{ message.erreurs.departement }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="input_codePost">Code Postal</label>
+                    <input type="text" class="form-control {% if message.erreurs.codePost %}border border-danger{% endif %}" id="input_codePost" name="codePost" value="{{ patient.codepostp }}">
+                    {% if message.erreurs.codePost %}
+                        <span class="help-block text-danger"> {{ message.erreurs.codePost }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="tel">Numéro de téléphone</label>
+                    <input type="tel"  class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}" id="tel"  value="{{ patient.num_tel }}" name="tel">
+                    {% if message.erreurs.tel %}
+                        <span class="help-block text-danger"> {{ message.erreurs.tel }}</span>
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Etat_sante">Etat de santé</label>
+                    <select id="Etat_sante" class="form-control" name="Etat_sante" >
+                        <option {% if patient.etat_sante == 'aucun symptome' %} selected {% endif %}>aucun symptome</option>
+                        <option {% if patient.etat_sante == 'fièvre' %} selected {% endif %}>fièvre</option>
+                        <option {% if patient.etat_sante == 'fièvre et pb respiratoires' %} selected {% endif %}>fièvre et pb respiratoires</option>
+                        <option {% if patient.etat_sante == 'inconscient' %} selected {% endif %}>inconscient</option>
+                        <option{% if patient.etat_sante == 'décédé' %} selected {% endif %}>décédé</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="fin_surveillance">Fin surveillance</label>
+                    <input type="datetime-local" class="form-control {% if message.erreurs.fin_surveillance %}border border-danger{% endif %}" id="fin_surveillance" name="fin_surveillance" >
+                    {% if message.erreurs.fin_surveillance %}
+                        <span class="help-block text-danger"> {{ message.erreurs.fin_surveillance }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Mettre à jour">
+            <a href="{{ path_for('patient') }}" class="btn btn-danger">Annuler</a>
+        </form>
+        <HR>
+        <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="btn btn-primary">Hospitaliser</a>
+    </div>
+{% endblock %}

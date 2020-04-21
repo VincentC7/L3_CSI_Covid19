@@ -156,7 +156,7 @@
 
         <div class="row justify-content-md-center">
             {% for patient in patients %}
-                <div class="card col-3 m-1" style="width: 18rem;">
+                <div class="card col-lg-3 col-sm-2 m-1" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">{{ patient.nom}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ patient.prenom }}</h6>
@@ -165,7 +165,7 @@
                         <p class="card-text mb-2">Début de surveillance : {{ patient.debut_surveillance }}</p>
                         <p class="card-text m-0">{% if patient.fin_surveillance %} Fin de surveillance : {{ patient.fin_surveillance }} {% else %} Le patient est toujours sous surveillance {% endif %}</p>
                         <p class="card-text m-0">Etat de santé : {{ patient.etat_sante }}</p>
-                        {% if patient.hospitalise %}  <p class="card-text m-0">Le patient est hospitalisé</p>{% endif %}
+                        {% if patient.hospitalise %}  <p class="card-text m-0">Le patient se trouve à l'hopital : {{ patient.hospitalise }} </p>{% endif %}
                         <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">Modifier</a>
                         {% if not patient.hospitalise %}<a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="card-link">Hospitaliser</a>{% endif %}
                     </div>

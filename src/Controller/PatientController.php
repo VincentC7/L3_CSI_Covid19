@@ -23,19 +23,21 @@ class PatientController extends Controller {
         $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
         $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
         $count=0;
+
+        //Ajout des hospitalisations a chaques patients
         foreach ($patients as $patient){
             $patients[$count]['hospitalise'] = false;
-            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation from hospitalise where num_secup = ?");
+            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation, nomhop from hospitalise INNER JOIN hopital ON hospitalise.nohopital = hopital.nohopital where num_secup = ? ");
             $stmt->execute([$patient['num_secu']]);
             $hospitalisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($hospitalisations as $hospitalisation){
                 if (is_null($hospitalisation['fin_hospitalisation'])){
-                    $patients[$count]['hospitalise'] = true;
+                    $patients[$count]['hospitalise'] = $hospitalisation['nomhop'];
                 }
             }
             $count++;
         }
-        $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements, 'message']);
+        $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements]);
     }
 
     public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
@@ -46,11 +48,10 @@ class PatientController extends Controller {
         $params = $request->getParams();
         $erreurs = [];
 
-
         //Vérification du num tel, code post et num secu => bon format
-        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";;
-        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";;
-        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";;
+        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
+        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";
+        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";
 
         $this->est_champ_null($params['num_secu']) || $erreurs['num_secu'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['nom']) || $erreurs['nom'] = "Veuillez specifier ce champ";
@@ -101,8 +102,56 @@ class PatientController extends Controller {
         return $this->redirect($response,'patient');
     }
 
-    public function modifierPatient(RequestInterface $request, ResponseInterface $response){
-        echo "à faire";
+    public function afficher_modifier_patient(RequestInterface $request, ResponseInterface $response, $args){
+        $num = $args['numsecu'];
+        $pdo = $this->get_PDO();
+        $stmt_departements = $pdo->prepare("Select * from departement");
+        $stmt_departements->execute();
+        $stmt = $pdo->prepare("Select * from patient where num_secu = ?");
+        $stmt->execute([$num]);
+        $patient = $stmt->fetch();
+        $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
+        $this->render($response,'pages/modifier_patient.twig', ['patient' =>  $patient, 'departements' =>$departements]);
+    }
+
+    public function modifierPatient(RequestInterface $request, ResponseInterface $response, $args){
+        //Récupération de l'acces base
+        $pdo = $this->get_PDO();
+
+        //Verification des champs
+        $params = $request->getParams();
+        $erreurs = [];
+
+        //Vérification du num tel et code post => bon format
+        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
+
+        $this->est_champ_null($params['rue']) || $erreurs['rue'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['ville']) || $erreurs['ville'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['codePost']) || $erreurs['codePost'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['tel']) || $erreurs['tel'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
+
+        if (!empty($erreurs)){
+            $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'modifierPatient', ['numsecu'=>$args['numsecu']]);
+        }
+
+        if (Validator::dateTime()->validate($params['fin_surveillance'])){
+            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ?, fin_surveillance = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'],$params['fin_surveillance'],$args['numsecu']]);
+        }else{
+            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'], $args['numsecu']]);
+        }
+
+        if ($resultat) {
+            $this->afficher_message('Le patient a bien été modifié');
+        }else{
+            $this->afficher_message('Les information du patient ne sont pas corrects', 'echec');
+        }
+
+        return $this->redirect($response,'modifierPatient', ['numsecu'=>$args['numsecu']]);
     }
 
     public function hospitaliserPatient(RequestInterface $request, ResponseInterface $response){

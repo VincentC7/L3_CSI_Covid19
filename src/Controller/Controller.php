@@ -27,8 +27,8 @@ class Controller {
         $this->container->view->render($response,$file, $args);
     }
 
-    public function redirect(ResponseInterface $response, $nom){
-        return $response->withStatus(302)->withHeader('Location', $this->container->router->pathFor($nom));
+    public function redirect(ResponseInterface $response, $nom,$args =[]){
+        return $response->withStatus(302)->withHeader('Location', $this->container->router->pathFor($nom, $args));
     }
 
     public function afficher_message($message, $type = 'valide'){

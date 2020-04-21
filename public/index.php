@@ -33,8 +33,10 @@ $app->get('/', HomeController::class.":home")->setName("home");
 //page de gestion des patients
 $app->get('/Patient', PatientController::class.":home")->setName("patient");
 $app->post('/Patient', PatientController::class.":nouveauPatient");
-$app->get('/Patient/{numsecu}', PatientController::class.":modifierPatient")->setName('modifierPatient');
+
+$app->get('/Patient/{numsecu}', PatientController::class.":afficher_modifier_patient")->setName('modifierPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":modifierPatient");
+
 $app->get('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient")->setName('hospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient");
 
