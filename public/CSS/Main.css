@@ -1,10 +1,10 @@
-.patient, .hopital{
+.patient, .hopital, .departement{
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
     background-color: #f6f8fa;
 }
 
-.hopital{
+.hopital, .departement{
     display: flex;
 }
 
@@ -71,11 +71,11 @@
     background-color: #ecf0f1;
 }
 
-.info-hopital{
+.info-hopital, .info-dep{
     width: 100%;
 }
 
-.statut-hopital{
+.statut-hopital, .statut-dep{
     width: 100%;
     align-self: center;
     text-align: end;
@@ -88,7 +88,7 @@
     background-color: #f6f8fa;
 }
 
-.hopital:hover{
+.hopital:hover, .departement:hover{
     background-color: #bdc3c7;
 }
 

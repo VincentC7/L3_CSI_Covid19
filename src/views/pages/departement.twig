@@ -1,7 +1,56 @@
-{% extends "layout.twig"%}
+{% extends "layout.twig" %}
 
 {% block content %}
-    <div>
-        Departement
+    <h1> Rechercher un département </h1>
+    {% if message.valide %}
+        <div class="alert alert-success">
+            {{ message.valide }}
+        </div>
+    {% endif %}
+
+    {% if message.echec %}
+        <div class="alert alert-danger">
+            {{ message.echec }}
+        </div>
+    {% endif %}
+    <div class="form-row pb-5 pt-1">
+        <form class="col-10 m-auto" action="" method="get">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <select id="oCategorie" name="oCategorie" class="form-control">
+                        <option selected="selected" value="0">Nom du département</option>
+                        <option value="0">Numéro du département</option>
+                    </select>
+                </div>
+                <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Recherche</button>
+                </div>
+            </div>
+        </form>
     </div>
+    <p> Cliquez sur un élement pour le modifier</p>
+    <hr>
+    {% for dep in departements %}
+        <div class="row justify-content-md-center mb-3" id="hopital-{{ dep.nodep }}">
+            <div class="p-2 departement col-12">
+                <div class="info-dep col-4">
+                    <div class="nom-hopital"> {{ dep.nomdep }} ({{ dep.nodep }})</div>
+                </div>
+                <div class="statut-dep col-8">
+                    <div class=""> Seuil de personnes contaminées : {{ dep.seuil_contamine }}  </div>
+                </div>
+            </div>
+            <div class="hidden effectif-hopital justify-content-md-center row col-12 p-2">
+                <form action="{{ path_for('modifier_departement', {departement: dep.nodep}) }}" method="post">
+                    <div class="d-flex">
+                        <label for="input_seuil" class="col-6 mt-auto">Modifier le seuil du département</label>
+                        <input type="number" class="form-control col-3" id="input_seuil" name="seuil"
+                               value="{{ dep.seuil_contamine }}">
+                        <input type="submit" class="ml-3 btn btn-primary " value="Mettre à jour">
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

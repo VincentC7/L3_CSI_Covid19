@@ -16,7 +16,7 @@ class PatientController extends Controller {
      */
     public function index(RequestInterface $request, ResponseInterface $response){
         $pdo = $this->get_PDO();
-        $stmt_patients = $pdo->prepare("Select * from patient");
+        $stmt_patients = $pdo->prepare("Select * from patient order by nom");
         $stmt_departements = $pdo->prepare("Select * from departement");
         $stmt_patients->execute();
         $stmt_departements->execute();
@@ -69,14 +69,12 @@ class PatientController extends Controller {
             $stmt->execute([$params['num_secu']]);
             !isset($stmt->fetch()['nom']) ||  $erreurs['num_secu'] = "Ce patient existe déjà";
         }
-
-
+        //Affichage des erreurs s'il y en a
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
             $this->afficher_message($erreurs,'erreurs');
             return $this->redirect($response,'patient');
         }
-
 
         $stmt = $pdo->prepare("INSERT INTO patient (num_secu, nom, prenom, sexe, date_naissance, num_tel, ruep, villep, codepostp, debut_surveillance, fin_surveillance, etat_sante, nodep) VALUES (?,?,?,?,?,?,?,?,?,?,NULL,?,?)");
         $num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
@@ -93,6 +91,7 @@ class PatientController extends Controller {
         $sexe = filter_var($params['sexe'],FILTER_SANITIZE_STRING);
 
         $resultat = $stmt->execute([$num_secu,$nom,$prenom,$sexe,$date_naissance,$num_tel,$ruep,$villep,$codepostp,$debut_surveillance,$etat_sante,$nodep]);
+        //Vérification si la requette c'est correctement exécuté
         if ($resultat) {
             $this->afficher_message('Le patient a bien été crée');
         }else{

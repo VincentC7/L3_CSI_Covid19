@@ -45,7 +45,8 @@ $app->get('/Hopitaux', HopitalController::class.":index")->setName("hopitaux");
 $app->post('/Hopitaux/{nohopital}', HopitalController::class.":update")->setName("modifier_hopital");
 
 //page de gestion d'un département
-$app->get('/Departements', DepartementController::class.":home")->setName("departements");
+$app->get('/Departements', DepartementController::class.":index")->setName("departements");
+$app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
 
 //page de des statisiques
 $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
