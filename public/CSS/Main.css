@@ -1,3 +1,67 @@
-.help-block{
-    background: red;
+.patient{
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    background-color: #f6f8fa;
+}
+
+.info-patient{
+    width: fit-content;
+    display: flex;
+}
+
+.info-etat-sante{
+    width: fit-content;
+    height: fit-content;
+    font-size: 10px;
+    color: #f6f8fa;
+    align-self: center;
+    padding: 0.25em;
+    border-radius: 0.5em;
+}
+
+.nom-patient{
+    font-size: 20px;
+    margin-right: 0.35em;
+    font-weight: bold;
+}
+
+.prenom-patient{
+    height: fit-content;
+    font-size: 20px;
+    margin-right: 0.35em;
+    align-self: center;
+}
+
+.sante-mort{
+    background: #000000;
+}
+.sante-inconscient{
+    background: #e74c3c;
+}
+.sante-fievre-pb-resp{
+    background: #e67e22;
+}
+.sante-fievre{
+    background: #f1c40f;
+}
+.sante-aucun-sympt{
+    background: #27ae60;
+}
+
+.controls{
+    width: fit-content;
+    text-align: center;
+}
+
+.icon{
+    width: 2em;
+    height: 2em;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .20rem;
+    background-color: #ffffff;
+    padding: 0.1em;
+}
+
+.icon:hover{
+    background-color: #ecf0f1;
 }

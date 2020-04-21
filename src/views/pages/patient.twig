@@ -154,23 +154,38 @@
             </form>
         </div>
 
-        <div class="row justify-content-md-center">
-            {% for patient in patients %}
-                <div class="card col-lg-3 col-sm-2 m-1" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ patient.nom}}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ patient.prenom }}</h6>
-                        <p class="card-text m-0">Date de Naissance : {{ patient.date_naissance }}</p>
-                        <p class="card-text m-0">Numéro de téléphone : {{ patient.num_tel }}</p>
-                        <p class="card-text mb-2">Début de surveillance : {{ patient.debut_surveillance }}</p>
-                        <p class="card-text m-0">{% if patient.fin_surveillance %} Fin de surveillance : {{ patient.fin_surveillance }} {% else %} Le patient est toujours sous surveillance {% endif %}</p>
-                        <p class="card-text m-0">Etat de santé : {{ patient.etat_sante }}</p>
-                        {% if patient.hospitalise %}  <p class="card-text m-0">Le patient se trouve à l'hopital : {{ patient.hospitalise }} </p>{% endif %}
-                        <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">Modifier</a>
-                        {% if not patient.hospitalise %}<a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="card-link">Hospitaliser</a>{% endif %}
+        {% for patient in patients %}
+            <div class="row mb-3 p-2 patient">
+                <div class="col-10 info-patient">
+                    <div class="nom-patient">{{ patient.nom}}</div>
+                    <div class="prenom-patient bottom">{{ patient.prenom }}</div>
+                    <div class="info-etat-sante
+                        {% if patient.etat_sante == 'fièvre et pb respiratoires'  %} sante-fievre-pb-resp
+                        {% elseif patient.etat_sante == 'fièvre' %} sante-fievre
+                        {% elseif patient.etat_sante == 'inconscient' %} sante-inconscient
+                        {% elseif patient.etat_sante == 'décédé' %} sante-mort
+                        {% elseif patient.etat_sante == 'aucun symptome' %} sante-aucun-sympt
+                        {% endif %}
+                        "> {{ patient.etat_sante }}
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+                <div class="col-2 controls">
+                    <a href="{{ path_for('modifierPatient', {numsecu: patient.num_secu}) }}" class="card-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" id="Capa_1" enable-background="new 0 0 524.235 524.235" height="512px" viewBox="0 0 524.235 524.235" width="512px" class="icon"><g><path d="m262.118 0c-144.53 0-262.118 117.588-262.118 262.118s117.588 262.118 262.118 262.118 262.118-117.588 262.118-262.118-117.589-262.118-262.118-262.118zm17.05 417.639c-12.453 2.076-37.232 7.261-49.815 8.303-10.651.882-20.702-5.215-26.829-13.967-6.143-8.751-7.615-19.95-3.968-29.997l49.547-136.242h-51.515c-.044-28.389 21.25-49.263 48.485-57.274 12.997-3.824 37.212-9.057 49.809-8.255 7.547.48 20.702 5.215 26.829 13.967 6.143 8.751 7.615 19.95 3.968 29.997l-49.547 136.242h51.499c.01 28.356-20.49 52.564-48.463 57.226zm15.714-253.815c-18.096 0-32.765-14.671-32.765-32.765 0-18.096 14.669-32.765 32.765-32.765s32.765 14.669 32.765 32.765c0 18.095-14.668 32.765-32.765 32.765z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#747E86"/></g> </svg>
+                        {% if not patient.hospitalise %}
+                            <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="card-link">
+                                <?xml version="1.0"?>
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512px" height="512px"><g><g>
+                                            <g>
+                                                <path d="M469.333,106.667H362.667V85.333c0-23.531-19.135-42.667-42.667-42.667H192c-23.531,0-42.667,19.135-42.667,42.667v21.333    H42.667C19.135,106.667,0,125.802,0,149.333v277.333c0,23.531,19.135,42.667,42.667,42.667h426.667    c23.531,0,42.667-19.135,42.667-42.667V149.333C512,125.802,492.865,106.667,469.333,106.667z M192,85.333h128v21.333H192V85.333z     M362.667,330.667c0,5.896-4.771,10.667-10.667,10.667h-53.333v53.333c0,5.896-4.771,10.667-10.667,10.667h-64    c-5.896,0-10.667-4.771-10.667-10.667v-53.333H160c-5.896,0-10.667-4.771-10.667-10.667v-64c0-5.896,4.771-10.667,10.667-10.667    h53.333v-53.333c0-5.896,4.771-10.667,10.667-10.667h64c5.896,0,10.667,4.771,10.667,10.667V256H352    c5.896,0,10.667,4.771,10.667,10.667V330.667z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#778086"/>
+                                            </g>
+                                        </g></g>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
