@@ -88,6 +88,10 @@
     background-color: #f6f8fa;
 }
 
+.hopital:hover{
+    background-color: #bdc3c7;
+}
+
 .hidden{
     display: none;
 }

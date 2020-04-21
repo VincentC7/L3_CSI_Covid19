@@ -29,6 +29,8 @@
             </div>
         </form>
     </div>
+    <p> Cliquez sur un élement pour le modifier</p>
+    <hr>
     {% for hopital in hopitaux %}
         <div class="row justify-content-md-center mb-3" id="hopital-{{ hopital.nohopital }}">
             <div class=" p-2 hopital col-12">
@@ -40,7 +42,7 @@
                     <div class="capa-hopital"> Nombre de personnes dans l'hopital : {{(hopital.places_actuelles) }}/{{hopital.places_tot}} </div>
                 </div>
             </div>
-            <div class="effectif-hopital justify-content-md-center row col-12 p-2">
+            <div class="hidden effectif-hopital justify-content-md-center row col-12 p-2">
                 <div class="info-effectif-patient col-6">
                     <div class=""> Departement :  {{ hopital.nomdep }}</div>
                     <div class=""> Places libre dans l'hopital : {{ hopital.nb_libres }} </div>
