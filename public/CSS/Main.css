@@ -96,6 +96,11 @@
     align-self: center;
 }
 
+.btn-list-patient{
+    text-align: end;
+    align-self: center;
+}
+
 .hidden{
     display: none;
 }

@@ -37,7 +37,7 @@ class PatientController extends Controller {
             }
             $count++;
         }
-        $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements]);
+        $this->render($response,'pages/list_patients.twig',['patients'=> $patients, 'departements' =>$departements]);
     }
 
     public function new(RequestInterface $request, ResponseInterface $response){
@@ -50,7 +50,7 @@ class PatientController extends Controller {
 
         //Vérification du num tel, code post et num secu => bon format
         Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
-        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";
+        (Validator::length(10,10)->validate($params['tel']) && is_numeric($params['tel'])) || $erreurs['tel'] = "Format incorrect";
         Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";
 
         $this->est_champ_null($params['num_secu']) || $erreurs['num_secu'] = "Veuillez specifier ce champ";
@@ -116,13 +116,12 @@ class PatientController extends Controller {
         $hospitalisations = $stmt_hospi->fetchAll(PDO::FETCH_ASSOC);
         $currentHop = false;
         foreach ($hospitalisations as $hospitalisation){
-            if ($hospitalisation['fin_hospitalisation']) {
+            if (is_null($hospitalisation['fin_hospitalisation'])) {
                 $currentHop = true;
                 break;
             }
         }
-
-        $this->render($response,'pages/modifier_patient.twig', ['patient' =>  $patient, 'departements' =>$departements, 'hispitalisations'=>$hospitalisations, 'currentHop' => $currentHop]);
+        $this->render($response,'pages/patient.twig', ['patient' =>  $patient, 'departements' =>$departements, 'hispitalisations'=>$hospitalisations, 'currentHop' => $currentHop]);
     }
 
     public function update(RequestInterface $request, ResponseInterface $response, $args){

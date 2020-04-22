@@ -19,8 +19,8 @@ class StatistiquesController extends Controller {
         $pdo = $this->container->get('pdo');
         $this->render($response,'pages/stats.twig');
 
-        //$this->getStatPerGender($pdo, 54);
-        //$this->getStatPerStatus($pdo, 54);
+        $this->getStatPerGender($pdo, 54);
+        $this->getStatPerStatus($pdo, 54);
 
         echo $this->getDateDiff("2020-03-17 00:00:00", "2020-04-12 00:00:00", "%d");
     }
@@ -35,7 +35,6 @@ class StatistiquesController extends Controller {
             $stmt_patient_surv->execute(array($dpt));
             echo "département: ".$dpt."<br>";
         }
-
 
         $data = Array();
         $data[0] = 0;
@@ -161,10 +160,6 @@ class StatistiquesController extends Controller {
 
         return $interval->format($differenceFormat);
     }
-
-
-
-
 
     public function global_stat($pdo){
         $stmt_patient_surv = $pdo->prepare("select prenom, sexe, date_naissance, etat_sante from patient where fin_surveillance is null");

@@ -22,6 +22,18 @@ class DepartementController extends Controller {
         $this->render($response,'pages/departement.twig', ['departements'=>$departemnts]);
     }
 
+    public function view(RequestInterface $request, ResponseInterface $response, $args){
+        $pdo = $this->get_PDO();
+        $stmt = $pdo->prepare("Select * from patient where nodep = ? and fin_surveillance is null and num_secu not in (Select num_secup from hospitalise where fin_hospitalisation is null)");
+        $stmt->execute([$args['nodep']]);
+        $stmt_dep = $pdo->prepare("Select * from departement where nodep = ?");
+        $stmt_dep->execute([$args['nodep']]);
+        $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $departemnt = $stmt_dep->fetch();
+        $this->render($response,'pages/list_confines.twig', ['patients'=>$patients, 'departement'=>$departemnt]);
+    }
+
+
     public function update(RequestInterface $request, ResponseInterface $response, $args){
         //Récupération de l'acces base
         $pdo = $this->get_PDO();

@@ -48,6 +48,8 @@ $app->post('/Hopitaux/{nohopital}', HopitalController::class.":update")->setName
 $app->get('/Departements', DepartementController::class.":index")->setName("departements");
 $app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
 
+$app->get('/Departements/{nodep}', DepartementController::class.":view")->setName("list_confines");
+
 //page de des statisiques
 $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 

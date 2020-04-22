@@ -51,7 +51,7 @@ class HopitalController extends Controller {
         if ($resultat) {
             $this->afficher_message('Le nombre de places supplémentaires à bien été effectué');
         }else{
-            $this->afficher_message('Une erreur est survenue dans la mise à jour', 'echec');
+            $this->afficher_message($stmt_update->errorInfo()[2], 'echec');
         }
 
         return $this->redirect($response,'hopitaux');
