@@ -78,9 +78,7 @@ begin
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
 
-        if (new.etat_sante in ('aucuns symptômes', 'décédé')) then
-            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
-        end if;
+        update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
     end if;
 
     return new;
