@@ -61,8 +61,10 @@ $$ language plpgsql;
 
 
 --fonction lors de update dans patient
-create function proc_upd_patient() returns trigger as $proc_upd_patient$
+create or replace function proc_upd_patient() returns trigger as $proc_upd_patient$
+declare
 begin
+
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
         raise exception 'le patient a été réanimé ?';
     end if;
@@ -76,6 +78,10 @@ begin
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
     end if;
+
+    if (new.etat_sante in ('aucuns symptômes', 'décédé')) then
+        update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
+    end if;
     return new;
 end;
 $proc_upd_patient$ language plpgsql;
@@ -86,7 +92,7 @@ create trigger trig_upd_patient before update on patient for each row execute pr
 
 
 --fonction pour checker si la chaine est constituee uniquement de chiffres
-create function check_full_num(strpass TEXT, name TEXT) returns void as $$
+create or replace function check_full_num(strpass TEXT, name TEXT) returns void as $$
 declare
     i integer;
 begin
@@ -104,7 +110,7 @@ $$ language plpgsql;
 
 
 --fonction a executer a l insertion d un patient
-create function proc_insert_patient() returns trigger as $proc_insert_patient$
+create or replace function proc_insert_patient() returns trigger as $proc_insert_patient$
 begin
     perform check_full_num(new.num_secu, 'num_secu');
     perform check_full_num(new.num_tel, 'num_tel');
@@ -119,7 +125,7 @@ create trigger trig_insert_patient before insert on patient for each row execute
 
 
 --fonction a executer a l insertion d un hopital
-create function proc_insert_hopital() returns trigger as $proc_insert_hopital$
+create or replace function proc_insert_hopital() returns trigger as $proc_insert_hopital$
 begin
     perform check_full_num(new.codePostH, 'codePostH');
 
@@ -135,7 +141,7 @@ create trigger trig_insert_hopital before insert on hopital for each row execute
 
 
 --procédure lors d'une hospitalisation
-create function proc_insert_hospitalise() returns trigger as $proc_insert_hospitalise$
+create or replace function proc_insert_hospitalise() returns trigger as $proc_insert_hospitalise$
 declare
     nb_free_pl integer;
     nomH varchar;
@@ -156,12 +162,12 @@ create trigger trig_insert_hospitalise before insert on hospitalise for each row
 
 
  --fonction lors de update d'un patient hospitalise
-create function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
+create or replace function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
 begin
-	if (not new.fin_surveillance is null) then
-		perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
+	if (not new.fin_hospitalisation is null) then
+		perform f_check_date_deb_sup_fin(old.debut_hospitalisation, new.fin_hospitalisation);
 	end if;
-  update Hopital set where Hopital.noHopital = old.noHopital;                                          
+  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;
 
 	return new;
 end;
@@ -173,7 +179,7 @@ proc_upd_hospitalise();
 
 
 --fonction lors de l'augmentation de places supplémentaires
-create function proc_upd_hopital() returns trigger as $proc_upd_hopital$
+create or replace function proc_upd_hopital() returns trigger as $proc_upd_hopital$
 declare
     diff integer;
 begin
@@ -197,7 +203,7 @@ create trigger trig_upd_hopital before update on hopital for each row execute pr
 
 
  --transfert d'un patient
-create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+create or replace function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
 declare
    numS TEXT;
 begin

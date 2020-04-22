@@ -14,31 +14,33 @@ class PatientController extends Controller {
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */
-    public function home(RequestInterface $request, ResponseInterface $response){
+    public function index(RequestInterface $request, ResponseInterface $response){
         $pdo = $this->get_PDO();
-        $stmt_patients = $pdo->prepare("Select * from patient");
+        $stmt_patients = $pdo->prepare("Select * from patient order by nom");
         $stmt_departements = $pdo->prepare("Select * from departement");
         $stmt_patients->execute();
         $stmt_departements->execute();
         $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
         $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
         $count=0;
+
+        //Ajout des hospitalisations a chaques patients
         foreach ($patients as $patient){
             $patients[$count]['hospitalise'] = false;
-            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation from hospitalise where num_secup = ?");
+            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation, nomhop from hospitalise INNER JOIN hopital ON hospitalise.nohopital = hopital.nohopital where num_secup = ? ");
             $stmt->execute([$patient['num_secu']]);
             $hospitalisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($hospitalisations as $hospitalisation){
                 if (is_null($hospitalisation['fin_hospitalisation'])){
-                    $patients[$count]['hospitalise'] = true;
+                    $patients[$count]['hospitalise'] = $hospitalisation['nomhop'];
                 }
             }
             $count++;
         }
-        $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements, 'message']);
+        $this->render($response,'pages/patient.twig',['patients'=> $patients, 'departements' =>$departements]);
     }
 
-    public function nouveauPatient(RequestInterface $request, ResponseInterface $response){
+    public function new(RequestInterface $request, ResponseInterface $response){
         //Récupération de l'acces base
         $pdo = $this->get_PDO();
 
@@ -46,11 +48,10 @@ class PatientController extends Controller {
         $params = $request->getParams();
         $erreurs = [];
 
-
         //Vérification du num tel, code post et num secu => bon format
-        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";;
-        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";;
-        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";;
+        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
+        Validator::intVal()->length(10,10)->validate($params['tel']) || $erreurs['tel'] = "Format incorrect";
+        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";
 
         $this->est_champ_null($params['num_secu']) || $erreurs['num_secu'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['nom']) || $erreurs['nom'] = "Veuillez specifier ce champ";
@@ -68,14 +69,12 @@ class PatientController extends Controller {
             $stmt->execute([$params['num_secu']]);
             !isset($stmt->fetch()['nom']) ||  $erreurs['num_secu'] = "Ce patient existe déjà";
         }
-
-
+        //Affichage des erreurs s'il y en a
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
             $this->afficher_message($erreurs,'erreurs');
             return $this->redirect($response,'patient');
         }
-
 
         $stmt = $pdo->prepare("INSERT INTO patient (num_secu, nom, prenom, sexe, date_naissance, num_tel, ruep, villep, codepostp, debut_surveillance, fin_surveillance, etat_sante, nodep) VALUES (?,?,?,?,?,?,?,?,?,?,NULL,?,?)");
         $num_secu = filter_var($params['num_secu'],FILTER_SANITIZE_STRING);
@@ -92,6 +91,7 @@ class PatientController extends Controller {
         $sexe = filter_var($params['sexe'],FILTER_SANITIZE_STRING);
 
         $resultat = $stmt->execute([$num_secu,$nom,$prenom,$sexe,$date_naissance,$num_tel,$ruep,$villep,$codepostp,$debut_surveillance,$etat_sante,$nodep]);
+        //Vérification si la requette c'est correctement exécuté
         if ($resultat) {
             $this->afficher_message('Le patient a bien été crée');
         }else{
@@ -101,8 +101,69 @@ class PatientController extends Controller {
         return $this->redirect($response,'patient');
     }
 
-    public function modifierPatient(RequestInterface $request, ResponseInterface $response){
-        echo "à faire";
+    public function view(RequestInterface $request, ResponseInterface $response, $args){
+        $num = $args['numsecu'];
+        $pdo = $this->get_PDO();
+        $stmt_departements = $pdo->prepare("Select * from departement");
+        $stmt_hospi = $pdo->prepare("Select nohospitalisation,debut_hospitalisation,fin_hospitalisation,nomhop from hospitalise inner join hopital on hopital.nohopital = hospitalise.nohopital where num_secup = ?");
+        $stmt = $pdo->prepare("Select * from patient where num_secu = ?");
+        $stmt_departements->execute();
+        $stmt_hospi->execute([$num]);
+        $stmt->execute([$num]);
+
+        $patient = $stmt->fetch();
+        $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
+        $hospitalisations = $stmt_hospi->fetchAll(PDO::FETCH_ASSOC);
+        $currentHop = false;
+        foreach ($hospitalisations as $hospitalisation){
+            if ($hospitalisation['fin_hospitalisation']) {
+                $currentHop = true;
+                break;
+            }
+        }
+
+        $this->render($response,'pages/modifier_patient.twig', ['patient' =>  $patient, 'departements' =>$departements, 'hispitalisations'=>$hospitalisations, 'currentHop' => $currentHop]);
+    }
+
+    public function update(RequestInterface $request, ResponseInterface $response, $args){
+        //Récupération de l'acces base
+        $pdo = $this->get_PDO();
+
+        //Verification des champs
+        $params = $request->getParams();
+        $erreurs = [];
+
+        //Vérification du num tel et code post => bon format
+        Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
+        (Validator::length(10,10)->validate($params['tel']) && is_numeric($params['tel'])) || $erreurs['tel'] = "Format incorrect";
+
+        $this->est_champ_null($params['rue']) || $erreurs['rue'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['ville']) || $erreurs['ville'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['codePost']) || $erreurs['codePost'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['tel']) || $erreurs['tel'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
+
+        if (!empty($erreurs)){
+            $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
+        }
+
+        if (Validator::dateTime()->validate($params['fin_surveillance'])){
+            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ?, fin_surveillance = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'],$params['fin_surveillance'],$args['numsecu']]);
+        }else{
+            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'], $args['numsecu']]);
+        }
+
+        if ($resultat) {
+            $this->afficher_message('Le patient a bien été modifié');
+        }else{
+            $this->afficher_message('Les information du patient ne sont pas corrects', 'echec');
+        }
+
+        return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
     }
 
     public function hospitaliserPatient(RequestInterface $request, ResponseInterface $response){

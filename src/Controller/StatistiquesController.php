@@ -8,7 +8,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PDO;
 
-use L3_CSI_Covid19\Model\Patient;
 
 class StatistiquesController extends Controller {
 

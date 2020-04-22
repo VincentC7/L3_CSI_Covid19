@@ -1,3 +1,102 @@
-.help-block{
-    background: red;
+.patient, .hopital, .departement, .hospitalisation{
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    background-color: #f6f8fa;
 }
+
+.hopital, .departement{
+    display: flex;
+}
+
+.info-patient{
+    width: fit-content;
+    display: flex;
+}
+
+.info-etat-sante{
+    width: fit-content;
+    height: fit-content;
+    font-size: 10px;
+    color: #f6f8fa;
+    align-self: center;
+    padding: 0.25em;
+    border-radius: 0.5em;
+}
+
+.nom-patient, .nom-hopital{
+    font-size: 20px;
+    margin-right: 0.35em;
+    font-weight: bold;
+    align-self: center;
+}
+
+.prenom-patient, .ville-hopital{
+    height: fit-content;
+    font-size: 20px;
+    margin-right: 0.35em;
+    align-self: center;
+}
+
+.sante-mort{
+    background: #000000;
+}
+.sante-inconscient{
+    background: #e74c3c;
+}
+.sante-fievre-pb-resp{
+    background: #e67e22;
+}
+.sante-fievre{
+    background: #f1c40f;
+}
+.sante-aucun-sympt{
+    background: #27ae60;
+}
+
+.controls{
+    width: fit-content;
+    text-align: end;
+}
+
+.icon{
+    width: 2em;
+    height: 2em;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .20rem;
+    background-color: #ffffff;
+    padding: 0.1em;
+}
+
+.icon:hover{
+    background-color: #ecf0f1;
+}
+
+.info-hopital, .info-dep{
+    width: 100%;
+}
+
+.statut-hopital, .statut-dep{
+    width: 100%;
+    align-self: center;
+    text-align: end;
+}
+
+.effectif-hopital, .modif-departement{
+    border: 1px solid rgba(0,0,0,.125);
+    border-top: 0px;
+    border-radius: 0 0 .25rem .25rem;
+    background-color: #f6f8fa;
+}
+
+.hopital:hover, .departement:hover{
+    background-color: #bdc3c7;
+}
+
+.currentHosp{
+    align-self: center;
+}
+
+.hidden{
+    display: none;
+}
+

@@ -31,19 +31,22 @@ $app->add(new ErreurMiddleware($container->get('view')->getEnvironment()));
 $app->get('/', HomeController::class.":home")->setName("home");
 
 //page de gestion des patients
-$app->get('/Patient', PatientController::class.":home")->setName("patient");
-$app->post('/Patient', PatientController::class.":nouveauPatient");
-$app->get('/Patient/{numsecu}', PatientController::class.":modifierPatient")->setName('modifierPatient');
-$app->post('/Patient/{numsecu}', PatientController::class.":modifierPatient");
+$app->get('/Patient', PatientController::class.":index")->setName("patient");
+$app->post('/Patient', PatientController::class.":new");
+
+$app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
+$app->post('/Patient/{numsecu}', PatientController::class.":update");
+
 $app->get('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient")->setName('hospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient");
 
 //page de gestion des hopitaux
-$app->get('/Hopitaux', HopitalController::class.":home")->setName("hopitaux");
-$app->post('/Hopitaux', HopitalController::class.":modifer")->setName("modifierHopital");
+$app->get('/Hopitaux', HopitalController::class.":index")->setName("hopitaux");
+$app->post('/Hopitaux/{nohopital}', HopitalController::class.":update")->setName("modifier_hopital");
 
 //page de gestion d'un département
-$app->get('/Departements', DepartementController::class.":home")->setName("departements");
+$app->get('/Departements', DepartementController::class.":index")->setName("departements");
+$app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
 
 //page de des statisiques
 $app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
