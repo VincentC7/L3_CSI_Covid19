@@ -152,25 +152,25 @@ $proc_insert_hospitalise$ language plpgsql;
 
 create trigger trig_insert_hospitalise before insert on hospitalise for each row execute procedure
     proc_insert_hospitalise();
-                                            
 
-                                             
- --fonction lors de update d'un patient hospitalise 
-create function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$                                    
+
+
+ --fonction lors de update d'un patient hospitalise
+create function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
 begin
 	if (not new.fin_surveillance is null) then
-		perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);	
+		perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
 	end if;
-  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;                                          
-                                             
+  update Hopital set where Hopital.noHopital = old.noHopital;                                          
+
 	return new;
 end;
 $proc_upd_hospitalise$ language plpgsql;
 
 create trigger trig_upd_hospitalise before update on hospitalise for each row execute procedure
 proc_upd_hospitalise();
-                                             
-                                             
+
+
 
 --fonction lors de l'augmentation de places supplémentaires
 create function proc_upd_hopital() returns trigger as $proc_upd_hopital$
@@ -193,22 +193,22 @@ $proc_upd_hopital$ language plpgsql;
 
 create trigger trig_upd_hopital before update on hopital for each row execute procedure
     proc_upd_hopital();
- 
-                         
-                         
+
+
+
  --transfert d'un patient
 create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
 declare
    numS TEXT;
 begin
-    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;		 
-			 
+    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;
+
     update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
     insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
 end;
-$$ language plpgsql;                   
+$$ language plpgsql;
 
-                         
+
 
 --Insertion des données
 
