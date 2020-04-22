@@ -69,8 +69,8 @@ begin
         raise exception 'le patient a été réanimé ?';
     end if;
 
-    if (not new.fin_surveillance is null or ((new.etat_sante in ('aucuns symptômes', 'décédé')) and new.etat_sante != old.etat_sante)) then
-        if (new.etat_sante not in ('aucuns symptômes', 'décédé')) then
+    if (not new.fin_surveillance is null or ((new.etat_sante in ('aucun symptome', 'décédé')) and new.etat_sante != old.etat_sante)) then
+        if (new.etat_sante not in ('aucun symptome', 'décédé')) then
             raise exception 'il ne peut pas y avoir de fin d hospitalisation si le patient n est pas soit mort soit guérie';
         elseif (new.fin_surveillance is null) then
             raise exception 'si le patient est décédé ou guéri, une date de fin_surveillance doit être renseignée';
