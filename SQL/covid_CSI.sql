@@ -77,11 +77,12 @@ begin
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
+
+        if (new.etat_sante in ('aucuns symptômes', 'décédé')) then
+            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
+        end if;
     end if;
 
-    if (new.etat_sante in ('aucuns symptômes', 'décédé')) then
-        update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
-    end if;
     return new;
 end;
 $proc_upd_patient$ language plpgsql;
