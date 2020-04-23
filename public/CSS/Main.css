@@ -101,6 +101,11 @@
     align-self: center;
 }
 
+.label-hospi{
+    align-self: center;
+    margin: 0;
+}
+
 .hidden{
     display: none;
 }

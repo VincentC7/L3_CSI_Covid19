@@ -190,6 +190,8 @@
                                   data-original="#000000" class="active-path" data-old_color="#000000" fill="#747E86"/>
                         </g>
                     </svg>
+                </a>
+                {% if not (patient.hospitalise) and not patient.fin_surveillance %}
                     <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="">
                         <?xml version="1.0"?>
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg"
@@ -206,7 +208,7 @@
                             </g>
                                 </svg>
                     </a>
-                </a>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

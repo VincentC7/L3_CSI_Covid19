@@ -107,7 +107,7 @@
     </div>
     <HR>
     <h2>Historique hospitalisation</h2>
-    {% for hosp in hispitalisations %}
+    {% for hosp in hospitalisations %}
         <div class="d-flex justify-content-md-center mb-2" id="hospitalisation-{{ hosp.nohospitalisation }}">
             <div class="p-2 hospitalisation col-12 d-flex">
                 {% if hosp.fin_hospitalisation %}
@@ -120,10 +120,10 @@
             </div>
         </div>
     {% endfor %}
-    {% if not hispitalisations %}
+    {% if not hospitalisations %}
         <div class="mb-2"> Il n'y a aucune hospitalisation pour ce patient </div>
     {% endif %}
-    {% if not currentHop %}
+    {% if not currentHop and not patient.fin_surveillance %}
         <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="btn btn-primary">Hospitaliser le patient</a>
     {% endif %}
 {% endblock %}

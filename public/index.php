@@ -3,6 +3,7 @@
 use L3_CSI_Covid19\Controller\DepartementController;
 use L3_CSI_Covid19\Controller\HomeController;
 use L3_CSI_Covid19\Controller\HopitalController;
+use L3_CSI_Covid19\Controller\HospitalisationController;
 use L3_CSI_Covid19\Controller\PatientController;
 use L3_CSI_Covid19\Controller\StatistiquesController;
 use L3_CSI_Covid19\Middleware\ErreurMiddleware;
@@ -37,8 +38,8 @@ $app->post('/Patient', PatientController::class.":new");
 $app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
 
-$app->get('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient")->setName('hospitaliserPatient');
-$app->post('/Patient/{numsecu}/Hospitaliser', PatientController::class.":hospitaliserPatient");
+$app->get('/Patient/{numsecu}/Hospitaliser', HospitalisationController::class.":index")->setName('hospitaliserPatient');
+$app->post('/Patient/{numsecu}/Hospitaliser/{nohopital}', HospitalisationController::class.":new")->setName('dohospitaliserPatient');
 
 //page de gestion des hopitaux
 $app->get('/Hopitaux', HopitalController::class.":index")->setName("hopitaux");

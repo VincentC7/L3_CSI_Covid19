@@ -1,0 +1,33 @@
+{% extends "layout.twig"%}
+
+{% block content %}
+    <h1>Hospitaliser un patient</h1>
+    <div>Voici les hopitaux disponibles dans le département du patient</div>
+    <hr>
+    {% if not hopitaux %}
+        <div> Nous n'avons pas trouvé d'hopital disponible dans le département du patient</div>
+    {% endif %}
+    {% for hopital in hopitaux %}
+        <div class="justify-content-md-center mb-3" id="hopital-{{ hopital.nohopital }}">
+            <div class=" p-2 hopital col-12">
+                <div class="info-hopital col-9">
+                    <div class="nom-hopital"> {{ hopital.nomhop }} </div>
+                    <div class="adr-hopital"> {{ hopital.rueh }} {{ hopital.villeh }}, {{ hopital.codeposth }}</div>
+                </div>
+                <div class="statut-hopital col-3">
+                    <div class="capa-hopital"> Il y a {{ hopital.nb_libres }} places libres </div>
+                </div>
+            </div>
+            <div class="hidden effectif-hopital justify-content-md-center col-12 p-2">
+                <form action="{{ path_for('dohospitaliserPatient', {nohopital: hopital.nohopital, numsecu: patient.num_secu }) }}" method="post" class="w-100">
+                    <div class="d-flex w-100 pl-2">
+                        <label class="label-hospi" for="input_nbplaces">Date de début d'hospitalisation</label>
+                        <input type="datetime-local" class="form-control col-4 ml-2" id="input_nbplaces" name="debut_hosp"
+                               value="">
+                        <input type="submit" class="btn btn-primary ml-2" value="Hospitaliser">
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -121,7 +121,7 @@ class PatientController extends Controller {
                 break;
             }
         }
-        $this->render($response,'pages/patient.twig', ['patient' =>  $patient, 'departements' =>$departements, 'hispitalisations'=>$hospitalisations, 'currentHop' => $currentHop]);
+        $this->render($response,'pages/patient.twig', ['patient' =>  $patient, 'departements' =>$departements,'hospitalisations'=>$hospitalisations ,'currentHop' => $currentHop]);
     }
 
     public function update(RequestInterface $request, ResponseInterface $response, $args){
@@ -163,10 +163,6 @@ class PatientController extends Controller {
         }
 
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
-    }
-
-    public function hospitaliserPatient(RequestInterface $request, ResponseInterface $response){
-        echo "à faire";
     }
 
     private function est_champ_null($var){
