@@ -64,6 +64,7 @@ $$ language plpgsql;
 create or replace function proc_upd_patient() returns trigger as $proc_upd_patient$
 declare
     noHosp integer;
+    fin_hosp timestamp;
 begin
 
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
@@ -78,7 +79,12 @@ begin
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
-        if(((select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu) is not null) and ((select fin_hospitalisation from hospitalise where noHospitalisation = noHosp) is null)) then
+        select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu;
+
+        if(noHosp is not null) then
+            select fin_hospitalisation into fin_hosp from hospitalise where noHospitalisation = noHosp;
+        end if;
+        if(fin_hosp is null) then
             update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
         end if;
     end if;
