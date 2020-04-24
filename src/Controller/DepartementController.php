@@ -19,7 +19,7 @@ class DepartementController extends Controller {
         $stmt = $pdo->prepare("SELECT * FROM departement order by nodep");
         $stmt->execute();
         $departemnts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->render($response,'pages/departement.twig', ['departements'=>$departemnts]);
+        $this->render($response,'pages/list_departements.twig', ['departements'=>$departemnts]);
     }
 
     public function view(RequestInterface $request, ResponseInterface $response, $args){
@@ -30,7 +30,8 @@ class DepartementController extends Controller {
         $stmt_dep->execute([$args['nodep']]);
         $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $departemnt = $stmt_dep->fetch();
-        $this->render($response,'pages/list_confines.twig', ['patients'=>$patients, 'departement'=>$departemnt]);
+        $bilan_dep = new Bilan($pdo);
+        $this->render($response,'pages/departement.twig', ['patients'=>$patients, 'departement'=>$departemnt, 'bilan'=>$bilan_dep->get_statisiques($departemnt['nodep'])]);
     }
 
 
