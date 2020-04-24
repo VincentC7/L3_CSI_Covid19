@@ -1,4 +1,4 @@
-.patient, .hopital, .departement, .hospitalisation{
+.patient, .hopital, .departement, .hospitalisation, .graph{
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
     background-color: #f6f8fa;
@@ -83,7 +83,7 @@
 
 .effectif-hopital, .modif-departement{
     border: 1px solid rgba(0,0,0,.125);
-    border-top: 0px;
+    border-top: 0;
     border-radius: 0 0 .25rem .25rem;
     background-color: #f6f8fa;
 }
@@ -104,6 +104,18 @@
 .label-hospi{
     align-self: center;
     margin: 0;
+}
+
+.graph{
+    margin: 0 1.5em 1.5em 0;
+    padding: 1em;
+    width: 430px;
+    float: left;
+}
+
+.bilan{
+    width: fit-content;
+    margin: auto;
 }
 
 .hidden{

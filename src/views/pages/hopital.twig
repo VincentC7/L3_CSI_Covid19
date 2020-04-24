@@ -46,8 +46,8 @@
                 <div class="info-effectif-patient col-6">
                     <div class=""> Departement :  {{ hopital.nomdep }}</div>
                     <div class=""> Places libre dans l'hopital : {{ hopital.nb_libres }} </div>
-                    <div class=""> Capacité d'acceuil de l'hopital : {{ hopital.nb_places }} </div>
-                    <div class=""> Capacité d'acceuil supplementaire l'hopital : {{ hopital.nb_supplementaire }} </div>
+                    <div class=""> Capacité d'accueil de l'hopital : {{ hopital.nb_places }} </div>
+                    <div class=""> Capacité d'accueil supplementaire l'hopital : {{ hopital.nb_supplementaire }} </div>
                 </div>
                 <div class="col-6 mt-auto mb-auto">
                     <form action="{{ path_for('modifier_hopital', {nohopital: hopital.nohopital}) }}" method="post">
