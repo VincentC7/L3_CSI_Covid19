@@ -154,7 +154,7 @@ declare
     nomH varchar;
     noHosp integer;
 begin
-    select noHospitalisation into noHosp where num_secuP = new.num_secuP;
+    select noHospitalisation into noHosp from Hospitalise where num_secuP = new.num_secuP;
     if(noHosp is not null) then
         raise exception 'une hospitalisation de ce patient est déjà en cours';
     end if;

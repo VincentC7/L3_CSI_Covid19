@@ -137,7 +137,7 @@ class Bilan {
             $stmt_patient_mort = $this->pdo->prepare("select count(*) from patient where etat_sante = 'décédé'");
             $stmt_patient_mort->execute();
 
-            $stmt_patient_gueris = $this->pdo->prepare("select count(*) from patient where fin_surveillance is null and etat_sante = 'aucun symptome'");
+            $stmt_patient_gueris = $this->pdo->prepare("select count(*) from patient where fin_surveillance is not null and etat_sante = 'aucun symptome'");
             $stmt_patient_gueris->execute();
         }else{
             $stmt_patient_hosp = $this->pdo->prepare("select count(*) from patient inner join hospitalise h on patient.num_secu = h.num_secup where fin_hospitalisation is null and nodep = ?");
@@ -149,7 +149,7 @@ class Bilan {
             $stmt_patient_mort = $this->pdo->prepare("select count(*) from patient where etat_sante = 'décédé' and nodep = ?");
             $stmt_patient_mort->execute(array($dpt));
 
-            $stmt_patient_gueris = $this->pdo->prepare("select count(*) from patient where fin_surveillance is null and nodep = ?and etat_sante = 'aucun symptome'");
+            $stmt_patient_gueris = $this->pdo->prepare("select count(*) from patient where fin_surveillance is not null and nodep = ?and etat_sante = 'aucun symptome'");
             $stmt_patient_gueris->execute(array($dpt));
         }
         $morts = $stmt_patient_mort->fetch(PDO::FETCH_ASSOC);
@@ -211,6 +211,5 @@ class Bilan {
 
         return $interval->format($format);
     }
-
 
 }
