@@ -96,7 +96,7 @@
     align-self: center;
 }
 
-.btn-list-patient{
+.btn-list-patient,  .btn-stop-hosp{
     text-align: end;
     align-self: center;
 }

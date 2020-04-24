@@ -105,7 +105,7 @@ class PatientController extends Controller {
         $num = $args['numsecu'];
         $pdo = $this->get_PDO();
         $stmt_departements = $pdo->prepare("Select * from departement");
-        $stmt_hospi = $pdo->prepare("Select nohospitalisation,debut_hospitalisation,fin_hospitalisation,nomhop from hospitalise inner join hopital on hopital.nohopital = hospitalise.nohopital where num_secup = ?");
+        $stmt_hospi = $pdo->prepare("Select nohospitalisation,debut_hospitalisation,fin_hospitalisation,nomhop from hospitalise inner join hopital on hopital.nohopital = hospitalise.nohopital where num_secup = ? order by nohospitalisation");
         $stmt = $pdo->prepare("Select * from patient where num_secu = ?");
         $stmt_departements->execute();
         $stmt_hospi->execute([$num]);

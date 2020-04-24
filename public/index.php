@@ -31,7 +31,7 @@ $app->add(new ErreurMiddleware($container->get('view')->getEnvironment()));
 //page de d'acceuil
 $app->get('/', HomeController::class.":home")->setName("home");
 
-//page de gestion des patients
+//pages de gestion des patients
 $app->get('/Patient', PatientController::class.":index")->setName("patient");
 $app->post('/Patient', PatientController::class.":new");
 
@@ -40,19 +40,17 @@ $app->post('/Patient/{numsecu}', PatientController::class.":update");
 
 $app->get('/Patient/{numsecu}/Hospitaliser', HospitalisationController::class.":index")->setName('hospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitaliser/{nohopital}', HospitalisationController::class.":new")->setName('dohospitaliserPatient');
+$app->post('/Patient/{numsecu}/Hospitalisation/{noHosp}', HospitalisationController::class.":update")->setName('fin_hospitalisation');
 
-//page de gestion des hopitaux
+//pages de gestion des hopitaux
 $app->get('/Hopitaux', HopitalController::class.":index")->setName("hopitaux");
 $app->post('/Hopitaux/{nohopital}', HopitalController::class.":update")->setName("modifier_hopital");
 
-//page de gestion d'un département
+//pages de gestion d'un département
 $app->get('/Departements', DepartementController::class.":index")->setName("departements");
 $app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
 
 $app->get('/Departements/{nodep}', DepartementController::class.":view")->setName("list_confines");
-
-//page de des statisiques
-$app->get('/Stat', StatistiquesController::class.":home")->setName("stats");
 
 
 $app->run();
