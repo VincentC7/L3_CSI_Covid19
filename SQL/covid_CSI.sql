@@ -79,14 +79,13 @@ begin
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
-        select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu;
+        select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu and fin_hospitalisation is null;
+        raise notice '%', noHosp;
 
         if(noHosp is not null) then
-            select fin_hospitalisation into fin_hosp from hospitalise where noHospitalisation = noHosp;
+            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu and noHospitalisation = noHosp;
         end if;
-        if(fin_hosp is null) then
-            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
-        end if;
+
     end if;
 
     return new;
@@ -154,7 +153,7 @@ declare
     nomH varchar;
     noHosp integer;
 begin
-    select noHospitalisation into noHosp from Hospitalise where num_secuP = new.num_secuP;
+    select noHospitalisation into noHosp from Hospitalise where num_secuP = new.num_secuP and fin_hospitalisation is null;
     if(noHosp is not null) then
         raise exception 'une hospitalisation de ce patient est déjà en cours';
     end if;
