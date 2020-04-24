@@ -20,13 +20,27 @@ class HopitalController extends Controller {
         $stmt->execute();
         $hopitaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $count = 0;
+        $hopitaux_plein = [];
+        $hopitaux_presque_plein = [];
+        $hopitaux_reste = [];
         foreach ($hopitaux as $hopital){
             $nb_place_hopital_tot = $hopital['nb_places'] + $hopital['nb_supplementaire'];
-            $hopitaux[$count]['places_actuelles'] = $nb_place_hopital_tot - $hopital['nb_libres'];
-            $hopitaux[$count]['places_tot'] = $nb_place_hopital_tot;
+            $place_acutelles = $nb_place_hopital_tot - $hopital['nb_libres'];
+            $hopital['places_actuelles'] = $place_acutelles;
+            $hopital['places_tot'] = $nb_place_hopital_tot;
+            if ($hopital['nb_libres']==0){
+                $hopital['etat'] = 'plein';
+                $hopitaux_plein[] = $hopital;
+            }elseif ((($place_acutelles/$nb_place_hopital_tot)*100) >= 80){
+                $hopital['etat'] = 'presque_plein';
+                $hopitaux_presque_plein[] = $hopital;
+            }else{
+                $hopitaux_reste[] = $hopital;
+            }
             $count++;
         }
-        $this->render($response,'pages/hopital.twig',['hopitaux'=>$hopitaux]);
+        $hopitaux = array_merge($hopitaux_plein,$hopitaux_presque_plein,$hopitaux_reste);
+        $this->render($response,'pages/list_hopital.twig',['hopitaux'=>$hopitaux]);
     }
 
     public function update(RequestInterface $request, ResponseInterface $response, $args){

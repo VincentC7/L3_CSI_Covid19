@@ -4,6 +4,15 @@
     background-color: #f6f8fa;
 }
 
+.red-back{
+    background-color: rgba(231, 76, 60,0.6);
+}
+
+.warnig-back{
+    background-color: rgba(241, 196, 15,0.6);
+}
+
+
 .hopital, .departement{
     display: flex;
 }
@@ -89,7 +98,15 @@
 }
 
 .hopital:hover, .departement:hover{
-    background-color: #bdc3c7;
+     background-color: #bdc3c7;
+}
+
+.red-back:hover, .red-back:hover{
+    background-color: rgba(231, 76, 60,0.8);
+}
+
+.warnig-back:hover, .warnig-back:hover{
+    background-color: rgba(241, 196, 15,0.8);
 }
 
 .currentHosp{

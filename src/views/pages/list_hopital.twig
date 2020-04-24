@@ -33,7 +33,7 @@
     <hr>
     {% for hopital in hopitaux %}
         <div class="row justify-content-md-center mb-3" id="hopital-{{ hopital.nohopital }}">
-            <div class=" p-2 hopital col-12">
+            <div class=" p-2 hopital col-12 {% if hopital.etat == 'plein' %} border-danger red-back {% elseif hopital.etat == 'presque_plein' %} border-warning warnig-back{% endif %}">
                 <div class="info-hopital col-9">
                     <div class="nom-hopital"> {{ hopital.nomhop }} </div>
                     <div class="adr-hopital"> {{ hopital.rueh }} {{ hopital.villeh }}, {{ hopital.codeposth }}</div>

@@ -18,8 +18,24 @@ class DepartementController extends Controller {
         $pdo = $this->get_PDO();
         $stmt = $pdo->prepare("SELECT * FROM departement order by nodep");
         $stmt->execute();
-        $departemnts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->render($response,'pages/list_departements.twig', ['departements'=>$departemnts]);
+        $departements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $departemnts_sature = [];
+        $departemnts_non_sature = [];
+        foreach ($departements as $departement){
+            $stmt = $pdo->prepare("Select count(*) from patient where nodep = ?");
+            $stmt->execute([$departement['nodep']]);
+            $nb_patient = $stmt->fetch()['count'];
+            $departement['nb_patients'] = $nb_patient;
+            $departement['sature'] = $nb_patient > $departement['seuil_contamine'];
+            if ($nb_patient > $departement['seuil_contamine']){
+                $departemnts_sature[] = $departement;
+            }else{
+                $departemnts_non_sature[] = $departement;
+            }
+        }
+        $departements = array_merge($departemnts_sature,$departemnts_non_sature);
+        $this->render($response,'pages/list_departements.twig', ['departements'=>$departements]);
     }
 
     public function view(RequestInterface $request, ResponseInterface $response, $args){
@@ -55,7 +71,7 @@ class DepartementController extends Controller {
         $stmt_update = $pdo->prepare('UPDATE departement SET seuil_contamine = ? where nodep = ?');
         $resultat = $stmt_update->execute([filter_var($params['seuil'],FILTER_SANITIZE_STRING),$args['departement']]);
         if ($resultat) {
-            $this->afficher_message('Le seuil de places supplémentaires à bien été effectué');
+            $this->afficher_message('Le seuil de places supplémentaires à bien été modifié');
         }else{
             $this->afficher_message('Une erreur est survenue dans la mise à jour', 'echec');
         }
