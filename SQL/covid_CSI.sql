@@ -152,7 +152,13 @@ create or replace function proc_insert_hospitalise() returns trigger as $proc_in
 declare
     nb_free_pl integer;
     nomH varchar;
+    noHosp integer;
 begin
+    select noHospitalisation into noHosp where num_secuP = new.num_secuP;
+    if(noHosp is not null) then
+        raise exception 'une hospitalisation de ce patient est déjà en cours';
+    end if;
+
     select nb_libres, nomHop into nb_free_pl, nomH FROM hopital WHERE Hopital.noHopital = new.noHopital;
 
     if (nb_free_pl = 0) then
