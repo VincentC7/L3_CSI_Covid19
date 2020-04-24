@@ -1,7 +1,159 @@
 {% extends "layout.twig"%}
 
 {% block content %}
-    <div>
-        Home
+    <h1>Bilan national</h1>
+    <div>Ces graphes indiquent l'état de l'épidémie au niveau nationnal. Vous pouvez voir le détail des valeurs en glissant votre curseur sur les zones souhaitées</div>
+    <hr>
+    <div id="bilan-national" class="bilan">
+        <div class="graph">
+            <canvas id="bilan_etat_epidemie"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="bilan_sexe"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="bilan_etat_sante"></canvas>
+        </div
+        ><div class="graph">
+            <canvas id="bilan_age"></canvas>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+        Chart.defaults.global.title.display =true;
+        Chart.defaults.global.maintainAspectRatio = false;
+        var ctx = document.getElementById('bilan_etat_epidemie').getContext('2d');
+        ctx.canvas.width = 400;
+        ctx.canvas.height = 400;
+        var chart_etat_epidemeie = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'doughnut',
+            // The data for our dataset
+            data: {
+                labels: ['Guéri', 'Mort', 'Confiné', 'Hospitalisé'],
+                datasets: [{
+                    label: 'Stats_etat_nation',
+                    backgroundColor: [
+                        'rgba(46, 204, 113,0.4)',
+                        'rgba(149, 165, 166,0.4)',
+                        'rgba(241, 196, 15,0.4)',
+                        'rgba(231, 76, 60,0.4)',
+                    ],
+                    borderColor: [
+                        'rgb(46, 204, 113)',
+                        'rgb(149, 165, 166)',
+                        'rgb(241, 196, 15)',
+                        'rgb(231, 76, 60)',
+                    ],
+                    data: [{{bilan.statut.gueri}}, {{bilan.statut.mort}}, {{bilan.statut.confine}}, {{bilan.statut.hospitalise}}]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                title :{
+                    text: "Etat de l\'épidémie"
+                },
+
+            }
+        });
+
+        ctx = document.getElementById('bilan_sexe').getContext('2d');
+        ctx.canvas.width = 400;
+        ctx.canvas.height = 400;
+        var chart_sexe = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'pie',
+            // The data for our dataset
+            data: {
+                labels: ['Homme', 'Femme'],
+                datasets: [{
+                    label: 'Stats_etat_nation',
+                    backgroundColor: [
+                        'rgba(46, 204, 113,0.4)',
+                        'rgba(231, 76, 60,0.4)',
+                    ],
+                    borderColor: [
+                        'rgb(46, 204, 113)',
+                        'rgb(231, 76, 60)',
+                    ],
+                    data: [{{bilan.sexe.M}}, {{bilan.sexe.F}}]
+                }]
+            },
+            // Configuration options go here
+            options: {
+                title :{
+                    text: "Population surveillé en fonction de leur sexe"
+                }
+            }
+        });
+
+        ctx = document.getElementById('bilan_etat_sante').getContext('2d');
+        ctx.canvas.width = 400;
+        ctx.canvas.height = 400;
+        var chart_etat_sante = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'doughnut',
+            // The data for our dataset
+            data: {
+                labels: ['aucun symptome', 'fièvre', 'fièvre et pb respiratoires', 'inconscient'],
+                datasets: [{
+                    label: 'Stats_etat_nation',
+                    backgroundColor: [
+                        'rgba(46, 204, 113,0.4)',
+                        'rgba(149, 165, 166,0.4)',
+                        'rgba(241, 196, 15,0.4)',
+                        'rgba(231, 76, 60,0.4)',
+                    ],
+                    borderColor: [
+                        'rgb(46, 204, 113)',
+                        'rgb(149, 165, 166)',
+                        'rgb(241, 196, 15)',
+                        'rgb(231, 76, 60)',
+                    ],
+                    data: [{{bilan.etat_sante.aucun_symp}}, {{bilan.etat_sante.fievre}}, {{bilan.etat_sante.fievre_pb_resp}}, {{bilan.etat_sante.inconscient}}]
+                }]
+            },
+            // Configuration options go here
+            options: {
+                title :{
+                    text: "Population surveillé en fonction de leur etat de santé"
+                }
+            }
+        });
+
+
+        ctx = document.getElementById('bilan_age').getContext('2d');
+        ctx.canvas.width = 400;
+        ctx.canvas.height = 400;
+        var chart_age = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+            // The data for our dataset
+            data: {
+                labels: [' -15 ans', 'entre 15 et 44 ans', 'entre 45 et 64 ans', 'entre 65 et 75','plus de 75'],
+                datasets: [{
+                    label: 'age',
+                    backgroundColor: [
+                        'rgba(46, 204, 113,0.6)',
+                        'rgba(149, 165, 166,0.6)',
+                        'rgba(241, 196, 15,0.6)',
+                        'rgba(231, 76, 60,0.6)',
+                        'rgba(26,255,252,0.6)',
+                    ],
+                    data: [{{bilan.age.moins_15}}, {{bilan.age._15_44}}, {{bilan.age._45_64}}, {{bilan.age._65_74}}, {{bilan.age.plus_75}}]
+                }]
+            },
+            // Configuration options go here
+            options: {
+                title :{
+                    text: "Population surveillé en fonction de leur age"
+                },
+                legend:{
+                    visible: false
+                }
+            }
+        });
+    </script>
+
 {% endblock %}

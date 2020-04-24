@@ -12,7 +12,7 @@ class HomeController extends Controller {
      * @param ResponseInterface $response
      */
     public function home(RequestInterface $request, ResponseInterface $response){
-        $this->render($response,'pages/home.twig');
+        $bilan = new Bilan($this->get_PDO());
+        $this->render($response,'pages/home.twig', ['bilan'=>$bilan->get_statisiques()]);
     }
-
 }
