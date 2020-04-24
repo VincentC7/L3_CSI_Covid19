@@ -63,6 +63,7 @@ $$ language plpgsql;
 --fonction lors de update dans patient
 create or replace function proc_upd_patient() returns trigger as $proc_upd_patient$
 declare
+    noHosp integer;
 begin
 
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
@@ -77,8 +78,9 @@ begin
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
-
-        update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
+        if(((select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu) is not null) and ((select fin_hospitalisation from hospitalise where noHospitalisation = noHosp) is null)) then
+            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu;
+        end if;
     end if;
 
     return new;
@@ -150,7 +152,7 @@ begin
     if (nb_free_pl = 0) then
         raise exception 'plus de places dans cet hopital: %', nomH;
     end if;
-    update Hopital set nb_libres = nb_libres- 1 where noHopital = new.noHopital;
+    update Hopital set nb_libres = nb_libres - 1 where noHopital = new.noHopital;
     return new;
 end;
 $proc_insert_hospitalise$ language plpgsql;
@@ -163,6 +165,9 @@ create trigger trig_insert_hospitalise before insert on hospitalise for each row
  --fonction lors de update d'un patient hospitalise
 create or replace function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
 begin
+  if(old.fin_hospitalisation is not null) then
+    raise exception 'la date de fin d hospitalisation ne peut pas être modifiée';
+  end if;
 	if (not new.fin_hospitalisation is null) then
 		perform f_check_date_deb_sup_fin(old.debut_hospitalisation, new.fin_hospitalisation);
 	end if;
