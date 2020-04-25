@@ -52,7 +52,6 @@ create table Hospitalise(
 create or replace function f_check_date_deb_sup_fin(date_debut timestamp, date_fin timestamp) returns void as $$
 declare
 begin
-
     if (date_debut > date_fin) then
         raise exception 'La date de début ne peut pas être supérieur à la date de fin ! ';
     end if;
@@ -68,14 +67,14 @@ declare
 begin
 
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
-        raise exception 'le patient a été réanimé ?';
+        raise exception 'le patient a été réssusciter ?';
     end if;
 
     if (not new.fin_surveillance is null or ((new.etat_sante in ('aucun symptome', 'décédé')) and new.etat_sante != old.etat_sante)) then
         if (new.etat_sante not in ('aucun symptome', 'décédé')) then
             raise exception 'il ne peut pas y avoir de fin d hospitalisation si le patient n est pas soit mort soit guérie';
-        elseif (new.fin_surveillance is null) then
-            raise exception 'si le patient est décédé ou guéri, une date de fin_surveillance doit être renseignée';
+        elseif (new.fin_surveillance is null and new.etat_sante in ('décédé')) then
+            raise exception 'si le patient est décédé, une date de fin_surveillance doit être renseignée';
         end if;
 
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
@@ -182,7 +181,7 @@ begin
 	if (not new.fin_hospitalisation is null) then
 		perform f_check_date_deb_sup_fin(old.debut_hospitalisation, new.fin_hospitalisation);
 	end if;
-  update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;
+    update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;
 
 	return new;
 end;
@@ -217,18 +216,37 @@ create trigger trig_upd_hopital before update on hopital for each row execute pr
 
 
 
- --transfert d'un patient
-create or replace function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+--Fonction appelé toutes les 24h, mettant les patient dont l'état n'a pas empiré depuis 14 semaines à l'état géris
+--La fonction va parcourir l'ensemble des patient serveillés qui n'ont aucun symptomes
+-- Si leur état est stable de depuis plus de 14 jours on les concidères étant guéris
+-- état stable = pas d'hospitalisation dans les 14 jours de surveillances
+create or replace function check_daily_etat_patient() returns void as $check_dayli_etat_patient$
 declare
-   numS TEXT;
+    rec_patient RECORD;
+    c_patient cursor for select num_secu,debut_surveillance from patient where fin_surveillance is null and etat_sante = 'aucun symptome';
+    v_hosp hospitalise.fin_hospitalisation%TYPE;
+    v_diff integer;
 begin
-    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;
+    OPEN c_patient;
+    loop
+        fetch c_patient into rec_patient;
+        exit when not found;
 
-    update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
-    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
+        select fin_hospitalisation into v_hosp from hospitalise where num_secup = rec_patient.num_secu order by fin_hospitalisation DESC;
+        if (v_hosp is not null ) then
+            SELECT DATE_PART('day', now() -  v_hosp) into v_diff;
+        else
+            SELECT DATE_PART('day', now() -  rec_patient.debut_surveillance) into v_diff;
+        end if;
+
+        if (v_diff > 14) then
+            update patient set fin_surveillance = now() where num_secu = rec_patient.num_secu;
+        end if;
+
+    end loop;
+    close c_patient;
 end;
-$$ language plpgsql;
-
+$check_dayli_etat_patient$ language plpgsql;
 
 
 --Insertion des données
