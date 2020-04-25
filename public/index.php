@@ -34,22 +34,20 @@ $app->get('/', HomeController::class.":home")->setName("home");
 //pages de gestion des patients
 $app->get('/Patient', PatientController::class.":index")->setName("patient");
 $app->post('/Patient', PatientController::class.":new");
-
 $app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
-
 $app->get('/Patient/{numsecu}/Hospitaliser', HospitalisationController::class.":index")->setName('hospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitaliser/{nohopital}', HospitalisationController::class.":new")->setName('dohospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitalisation/{noHosp}', HospitalisationController::class.":update")->setName('fin_hospitalisation');
 
 //pages de gestion des hopitaux
-$app->get('/Hopitaux', HopitalController::class.":index")->setName("hopitaux");
+$app->get('/Hopital', HopitalController::class.":index")->setName("hopitaux");
 $app->post('/Hopitaux/{nohopital}', HopitalController::class.":update")->setName("modifier_hopital");
+$app->get('/Hopital/{nohopital}', HopitalController::class.":view")->setName("voirHopital");
 
 //pages de gestion d'un département
 $app->get('/Departements', DepartementController::class.":index")->setName("departements");
 $app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
-
 $app->get('/Departements/{nodep}', DepartementController::class.":view")->setName("list_confines");
 
 

@@ -70,4 +70,16 @@ class HopitalController extends Controller {
 
         return $this->redirect($response,'hopitaux');
     }
+
+    public function view(RequestInterface $request, ResponseInterface $response, $args){
+        $pdo = $this->get_PDO();
+        $stmt = $pdo->prepare("SELECT * FROM hopital where nohopital = ?");
+        $stmt_patient = $pdo->prepare("SELECT * FROM patient inner join hospitalise on hospitalise.num_secup = patient.num_secu where nohopital = ? and fin_hospitalisation is null");
+        $stmt->execute([$args['nohopital']]);
+        $stmt_patient->execute([$args['nohopital']]);
+        $hopital = $stmt->fetch();
+        $patients = $stmt_patient->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->render($response,'pages/hopital.twig',['hopital'=>$hopital,'patients'=>$patients]);
+    }
 }
