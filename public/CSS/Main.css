@@ -4,6 +4,10 @@
     background-color: #f6f8fa;
 }
 
+.patient{
+    display: flex;
+}
+
 .red-back{
     background-color: rgba(231, 76, 60,0.6);
 }
