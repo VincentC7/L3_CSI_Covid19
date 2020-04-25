@@ -124,13 +124,14 @@
 }
 
 .graph{
-    margin: 0 1.5em 1.5em 0;
+    margin: auto auto 1.5em;
     padding: 1em;
 }
 
 .bilan{
-    width: fit-content;
     margin: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .hidden{

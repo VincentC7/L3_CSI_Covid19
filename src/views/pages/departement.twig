@@ -76,8 +76,8 @@
         Chart.defaults.global.title.display =true;
         Chart.defaults.global.maintainAspectRatio = false;
         var ctx = document.getElementById('bilan_etat_epidemie').getContext('2d');
-        ctx.canvas.width = 400;
-        ctx.canvas.height = 400;
+        ctx.canvas.width = 300;
+        ctx.canvas.height = 300;
         var chart_etat_epidemeie = new Chart(ctx, {
             // The type of chart we want to create
             type: 'doughnut',
@@ -112,8 +112,8 @@
         });
 
         ctx = document.getElementById('bilan_sexe').getContext('2d');
-        ctx.canvas.width = 400;
-        ctx.canvas.height = 400;
+        ctx.canvas.width = 300;
+        ctx.canvas.height = 300;
         var chart_sexe = new Chart(ctx, {
             // The type of chart we want to create
             type: 'pie',
@@ -123,11 +123,11 @@
                 datasets: [{
                     label: 'Stats_etat_nation',
                     backgroundColor: [
-                        'rgba(46, 204, 113,0.4)',
+                        'rgba(52, 152, 219,0.4)',
                         'rgba(231, 76, 60,0.4)',
                     ],
                     borderColor: [
-                        'rgb(46, 204, 113)',
+                        'rgba(52, 152, 219,1.0)',
                         'rgb(231, 76, 60)',
                     ],
                     data: [{{bilan.sexe.M}}, {{bilan.sexe.F}}]
@@ -142,29 +142,29 @@
         });
 
         ctx = document.getElementById('bilan_etat_sante').getContext('2d');
-        ctx.canvas.width = 400;
-        ctx.canvas.height = 400;
+        ctx.canvas.width = 300;
+        ctx.canvas.height = 300;
         var chart_etat_sante = new Chart(ctx, {
             // The type of chart we want to create
             type: 'doughnut',
             // The data for our dataset
             data: {
-                labels: ['aucun symptome', 'fièvre', 'fièvre et pb respiratoires', 'inconscient'],
+                labels: ['fièvre et pb respiratoires', 'fièvre', 'aucun symptome', 'inconscient'],
                 datasets: [{
                     label: 'Stats_etat_nation',
                     backgroundColor: [
-                        'rgba(46, 204, 113,0.4)',
-                        'rgba(149, 165, 166,0.4)',
+                        'rgba(230, 126, 34,0.4)',
                         'rgba(241, 196, 15,0.4)',
+                        'rgba(46, 204, 113,0.4)',
                         'rgba(231, 76, 60,0.4)',
                     ],
                     borderColor: [
-                        'rgb(46, 204, 113)',
-                        'rgb(149, 165, 166)',
+                        'rgb(230, 126, 34,1.0)',
                         'rgb(241, 196, 15)',
+                        'rgb(46, 204, 113)',
                         'rgb(231, 76, 60)',
                     ],
-                    data: [{{bilan.etat_sante.aucun_symp}}, {{bilan.etat_sante.fievre}}, {{bilan.etat_sante.fievre_pb_resp}}, {{bilan.etat_sante.inconscient}}]
+                    data: [{{bilan.etat_sante.fievre_pb_resp}}, {{bilan.etat_sante.fievre}}, {{bilan.etat_sante.aucun_symp}}, {{bilan.etat_sante.inconscient}}]
                 }]
             },
             // Configuration options go here
@@ -177,8 +177,8 @@
 
 
         ctx = document.getElementById('bilan_age').getContext('2d');
-        ctx.canvas.width = 400;
-        ctx.canvas.height = 400;
+        ctx.canvas.width = 300;
+        ctx.canvas.height = 300;
         var chart_age = new Chart(ctx, {
             // The type of chart we want to create
             type: 'bar',
@@ -192,7 +192,7 @@
                         'rgba(149, 165, 166,0.6)',
                         'rgba(241, 196, 15,0.6)',
                         'rgba(231, 76, 60,0.6)',
-                        'rgba(26,255,252,0.6)',
+                        'rgba(52, 152, 219,0.6)',
                     ],
                     data: [{{bilan.age.moins_15}}, {{bilan.age._15_44}}, {{bilan.age._45_64}}, {{bilan.age._65_74}}, {{bilan.age.plus_75}}]
                 }]
