@@ -48,7 +48,9 @@ create table Hospitalise(
                             num_secuP char(15) not null constraint FK_Hospitalise_num_secuP REFERENCES Patient(num_secu)
 );
 
---check si la date de début est < à la date de fin
+/*
+    Fonction qui va tester si la date de début est inférieure à la date de fin
+*/
 create or replace function f_check_date_deb_sup_fin(date_debut timestamp, date_fin timestamp) returns void as $$
 declare
 begin
@@ -59,27 +61,22 @@ end;
 $$ language plpgsql;
 
 
---fonction lors de update dans patient
+/*
+    Fonction appelée lors de l'update d'un patient
+    La fonction teste:
+        que le patient ne peut pas être re contaminé
+        que le patient ne peut pas être réanimé
+
+    Si le patient est décédé, une date de fin de surveillance doit être renseignée
+    Si le patient est dans un état final: aucun symptome / décédé
+    ET qu'il a une hospitalisation, on y met fin
+
+    On vérifie également old.debut_surveillance < new.fin_surveillance
+ */
 create or replace function proc_upd_patient() returns trigger as $proc_upd_patient$
 declare
     noHosp integer;
 begin
-    /*
-    Si le patient est décédé est que sont état de santé change il a été réanimé
-
-    Si le patient à une date de fin de surveillance différente de null
-    OU que son nouvel état de santé correspond à {aucun symptome, décédé}
-    ET que son nouvel état de santé  et différent de l'ancien
-        Si le nouvel état de santé n'est pas dans {aucun symptome, décédé} -> Erreur : Pas de fin d'hospitalisation si le patient n'est pas mort ou guérie
-        Sinon si la date de fin_surveillance passe à Null -> Erreur : Un patient décédé ou guéri doit avoir une date de fin_surveillance
-
-    Vérification old.debut_surveillance < new.fin_surveillance
-
-    Séléction du numéro de l'hopital pour pouvoir l'afficher
-
-    Si le numéro de l'hopital n'est pas Null alors on update fin_hospitalisation d'hospitalise
-     */
-
     if(old.fin_surveillance is not null) then
         raise exception 'Un patient ne peut pas être re-contaminé';
     end if;
@@ -117,8 +114,9 @@ create trigger trig_upd_patient before update on patient for each row execute pr
     proc_upd_patient();
 
 
-
---fonction pour checker si la chaine est constituee uniquement de chiffres
+/*
+    Fonction qui va tester si la chaine est constituee uniquement de chiffres
+*/
 create or replace function check_full_num(strpass TEXT, name TEXT) returns void as $$
 declare
     i integer;
@@ -135,8 +133,10 @@ end;
 $$ language plpgsql;
 
 
-
---fonction a executer a l insertion d un patient
+/*
+    Fonction executée à l'insertion d'un patient
+    On effectue des vérification de base sur le numéro de sécurité social, le numéro de téléphone, le code postal
+*/
 create or replace function proc_insert_patient() returns trigger as $proc_insert_patient$
 begin
     perform check_full_num(new.num_secu, 'num_secu');
@@ -151,7 +151,11 @@ create trigger trig_insert_patient before insert on patient for each row execute
     proc_insert_patient();
 
 
---fonction a executer a l insertion d un hopital
+/*
+    Fonction éxecutée à l'insertion d'un nouvel hopital
+    Une vérification est effectuée sur le code postal
+    Le nombre de places libres est définie (en fonction de nombre de places de bases et de places supplémentaires)
+*/
 create or replace function proc_insert_hopital() returns trigger as $proc_insert_hopital$
 begin
     perform check_full_num(new.codePostH, 'codePostH');
@@ -167,7 +171,10 @@ create trigger trig_insert_hopital before insert on hopital for each row execute
     proc_insert_hopital();
 
 
---procédure lors d'une hospitalisation
+/*
+    Fonction appelée lors de la création d'une hospitalisation
+    La fonction va vérifier que le patient n'est aps déjà hospitalisé autre part et que l'hopital peut accueillir un patient supplémentaire
+*/
 create or replace function proc_insert_hospitalise() returns trigger as $proc_insert_hospitalise$
 declare
     nb_free_pl integer;
@@ -194,7 +201,11 @@ create trigger trig_insert_hospitalise before insert on hospitalise for each row
 
 
 
- --fonction lors de update d'un patient hospitalise
+ /*
+    Fonction exécutée lors de l'update d'une hospitalisation
+    La fonction empêche une re modification de la date de fin d'hospitalisation
+    Une place est libéré dans l'hopital ou l'hospitalisation a pris fin
+ */
 create or replace function proc_upd_hospitalise() returns trigger as $proc_upd_hospitalise$
 begin
   if(old.fin_hospitalisation is not null) then
@@ -214,7 +225,11 @@ proc_upd_hospitalise();
 
 
 
---fonction lors de l'augmentation de places supplémentaires
+/*
+    Fonction appelée lors de l'update des nombres de places supplémentaire dans un hopital
+    La fonction va tester si il est possible de modifier le nombre de place supplémentaire dans l'hopital courant
+    Si on retire trop de place alors qu'il y a des patients qui occupent ces places, l'update n'aura pas lieu
+*/
 create or replace function proc_upd_hopital() returns trigger as $proc_upd_hopital$
 declare
     diff integer;
@@ -238,10 +253,12 @@ create trigger trig_upd_hopital before update on hopital for each row execute pr
 
 
 
---Fonction appelé toutes les 24h, mettant les patient dont l'état n'a pas empiré depuis 14 semaines à l'état géris
---La fonction va parcourir l'ensemble des patient serveillés qui n'ont aucun symptomes
--- Si leur état est stable de depuis plus de 14 jours on les concidères étant guéris
--- état stable = pas d'hospitalisation dans les 14 jours de surveillances
+/*
+    Fonction appelé toutes les 24h, mettant les patient dont l'état n'a pas empiré depuis 14 semaines à l'état géris
+    La fonction va parcourir l'ensemble des patient serveillés qui n'ont aucun symptomes
+    Si leur état est stable de depuis plus de 14 jours on les concidères étant guéris
+    état stable = pas d'hospitalisation dans les 14 jours de surveillances
+*/
 create or replace function check_daily_etat_patient() returns void as $check_dayli_etat_patient$
 declare
     rec_patient RECORD;
@@ -271,15 +288,26 @@ end;
 $check_dayli_etat_patient$ language plpgsql;
 
 
---transfert d'un patient
-create or replace function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+/*
+    Fonction de transfert d'un patient
+    La fonction va vérifier que l'hopital cible a de la place pour accueillir le patient
+    Sinon le transfert n'aura pas lieu
+*/
+create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
 declare
     numS TEXT;
+    nb_places integer;
 begin
     select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;
 
+    select nb_libres into nb_places from Hopital where noHopital = newH;
+
+    if(nb_places = 0) then
+        raise exception 'hopital cible plein';
+    end if;
+
     update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
-    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
+    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, numS);
 end;
 $$ language plpgsql;
 
