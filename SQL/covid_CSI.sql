@@ -272,7 +272,7 @@ $check_dayli_etat_patient$ language plpgsql;
 
 
 --transfert d'un patient
-create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+create or replace function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
 declare
     numS TEXT;
 begin

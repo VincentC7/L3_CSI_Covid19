@@ -17,12 +17,12 @@
         <form class="col-10 m-auto" action="" method="get">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <select id="oCategorie" name="oCategorie" class="form-control">
+                    <select id="select-recherche-hopital" name="oCategorie" class="form-control">
                         <option selected="selected" value="0">Nom de l'hopital</option>
-                        <option value="0">Departement</option>
+                        <option value="1">Departement</option>
                     </select>
                 </div>
-                <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
+                <input id="rechercher-hopital" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="submit">Recherche</button>
                 </div>
@@ -31,12 +31,12 @@
     </div>
     <p> Cliquez sur un élement pour le modifier</p>
     <hr>
-    <div>
+    <div id="list-hopital">
         {% for hopital in hopitaux %}
             <div class="row justify-content-md-center mb-3" id="hopital-{{ hopital.nohopital }}">
                 <div class=" p-2 hopital col-12 {% if hopital.etat == 'plein' %} border-danger red-back {% elseif hopital.etat == 'presque_plein' %} border-warning warnig-back{% endif %}">
                     <div class="info-hopital col-9">
-                        <div class="nom-hopital"> {{ hopital.nomhop }} </div>
+                        <div data-nodep="{{ hopital.nodep }}" class="nom-hopital"> {{ hopital.nomhop }} </div>
                         <div class="adr-hopital"> {{ hopital.rueh }} {{ hopital.villeh }}, {{ hopital.codeposth }}</div>
                     </div>
                     <div class="statut-hopital col-3">

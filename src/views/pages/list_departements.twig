@@ -17,12 +17,12 @@
         <form class="col-10 m-auto" action="" method="get">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <select id="oCategorie" name="oCategorie" class="form-control">
+                    <select id="select-recherche-departement" name="oCategorie" class="form-control">
                         <option selected="selected" value="0">Nom du département</option>
-                        <option value="0">Numéro du département</option>
+                        <option value="1">Numéro du département</option>
                     </select>
                 </div>
-                <input id="oSaisie" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
+                <input id="rechercher-departement" name="oSaisie" type="text" class="form-control" aria-label="Saisie de mots clés">
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="submit">Recherche</button>
                 </div>
@@ -31,44 +31,46 @@
     </div>
     <p> Cliquez sur un élement pour plus d'information sur le département</p>
     <hr>
-    {% for dep in departements %}
-        <div class="row justify-content-md-center mb-3" id="departement-{{ dep.nodep }}">
-            <div class="p-2 departement col-12 {% if dep.sature %} border-danger red-back{% endif %}">
-                <div class="info-dep col-4">
-                    <div class="nom-departement"> {{ dep.nomdep }} ({{ dep.nodep }})</div>
+    <div id="list-departement">
+        {% for dep in departements %}
+            <div class="row justify-content-md-center mb-3" id="departement-{{ dep.nodep }}">
+                <div class="p-2 departement col-12 {% if dep.sature %} border-danger red-back{% endif %}">
+                    <div class="info-dep col-4">
+                        <div class="nom-departement"> {{ dep.nomdep }} ({{ dep.nodep }})</div>
+                    </div>
+                    <div class="statut-dep col-8">
+                        <div class=""> Seuil de personnes contaminées : {{ dep.seuil_contamine }} (Actuellement : {{dep.nb_patients}}) </div>
+                    </div>
                 </div>
-                <div class="statut-dep col-8">
-                    <div class=""> Seuil de personnes contaminées : {{ dep.seuil_contamine }} (Actuellement : {{dep.nb_patients}}) </div>
-                </div>
-            </div>
-            <div class="hidden modif-departement justify-content-md-center row col-12 p-2">
-                <div class="col-11">
-                    <form action="{{ path_for('modifier_departement', {departement: dep.nodep}) }}" method="post">
-                        <div class="d-flex">
-                            <label for="input_seuil" class="mt-auto">Modifier le seuil du département</label>
-                            <input type="number" class="form-control col-2 ml-2" id="input_seuil" name="seuil"
-                                   value="{{ dep.seuil_contamine }}">
-                            <input type="submit" class="ml-3 btn btn-primary " value="Mettre à jour">
-                        </div>
-                    </form>
-                </div>
-                <div class="col-1 btn-list-patient">
-                    <a href="{{ path_for('list_confines', {nodep: dep.nodep}) }}" class="btn-list-patient">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 469.333 469.333" style="enable-background:new 0 0 469.333 469.333;" xml:space="preserve" width="512px" height="512px"><g><g>
-                                    <g>
+                <div class="hidden modif-departement justify-content-md-center row col-12 p-2">
+                    <div class="col-11">
+                        <form action="{{ path_for('modifier_departement', {departement: dep.nodep}) }}" method="post">
+                            <div class="d-flex">
+                                <label for="input_seuil" class="mt-auto">Modifier le seuil du département</label>
+                                <input type="number" class="form-control col-2 ml-2" id="input_seuil" name="seuil"
+                                       value="{{ dep.seuil_contamine }}">
+                                <input type="submit" class="ml-3 btn btn-primary " value="Mettre à jour">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-1 btn-list-patient">
+                        <a href="{{ path_for('list_confines', {nodep: dep.nodep}) }}" class="btn-list-patient">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 469.333 469.333" style="enable-background:new 0 0 469.333 469.333;" xml:space="preserve" width="512px" height="512px"><g><g>
                                         <g>
-                                            <path d="M234.667,170.667c-35.307,0-64,28.693-64,64s28.693,64,64,64s64-28.693,64-64S269.973,170.667,234.667,170.667z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#5D676F"/>
-                                            <path d="M234.667,74.667C128,74.667,36.907,141.013,0,234.667c36.907,93.653,128,160,234.667,160     c106.773,0,197.76-66.347,234.667-160C432.427,141.013,341.44,74.667,234.667,74.667z M234.667,341.333     c-58.88,0-106.667-47.787-106.667-106.667S175.787,128,234.667,128s106.667,47.787,106.667,106.667     S293.547,341.333,234.667,341.333z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#5D676F"/>
+                                            <g>
+                                                <path d="M234.667,170.667c-35.307,0-64,28.693-64,64s28.693,64,64,64s64-28.693,64-64S269.973,170.667,234.667,170.667z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#5D676F"/>
+                                                <path d="M234.667,74.667C128,74.667,36.907,141.013,0,234.667c36.907,93.653,128,160,234.667,160     c106.773,0,197.76-66.347,234.667-160C432.427,141.013,341.44,74.667,234.667,74.667z M234.667,341.333     c-58.88,0-106.667-47.787-106.667-106.667S175.787,128,234.667,128s106.667,47.787,106.667,106.667     S293.547,341.333,234.667,341.333z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#5D676F"/>
+                                            </g>
                                         </g>
                                     </g>
                                 </g>
-                            </g>
                         </svg>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
 
 
