@@ -91,15 +91,13 @@ begin
     --un patient décédé doit avoir une date de fin de surveillance
     if(new.fin_surveillance is null and new.etat_sante = 'décédé') then
         raise exception 'Une date de fin de surveillance doit être renseignée si le patient est décédé';
-    elseif(new.fin_surveillance is not null) then
-        --check du patient soit décédé soit aucun symptome
-        if(new.etat_sante not in ('décédé', 'aucun symptome')) then
-            raise exception 'Un patient non surveillé doit être dans un état final';
-        end if;
+    elseif(new.etat_sante in ('décédé', 'aucun symptome')) then
 
         --check date
-        perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
-
+        if(new.fin_surveillance is not null) then
+            perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
+        end if;
+        
         --check si il y a une hospitalisation en cours
         select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu and fin_hospitalisation is null;
 
