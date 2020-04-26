@@ -180,8 +180,8 @@ begin
   end if;
 	if (not new.fin_hospitalisation is null) then
 		perform f_check_date_deb_sup_fin(old.debut_hospitalisation, new.fin_hospitalisation);
-	end if;
     update Hopital set nb_libres = nb_libres + 1 where Hopital.noHopital = old.noHopital;
+	end if;
 
 	return new;
 end;
