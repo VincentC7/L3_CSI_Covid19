@@ -66,6 +66,21 @@ declare
     noHosp integer;
     fin_hosp timestamp;
 begin
+    /*
+    Si le patient est décédé est que sont état de santé change il a été réanimé
+
+    Si le patient à une date de fin de surveillance différente de null
+    OU que son nouvel état de santé correspond à {aucun symptome, décédé}
+    ET que son nouvel état de santé  et différent de l'ancien
+        Si le nouvel état de santé n'est pas dans {aucun symptome, décédé} -> Erreur : Pas de fin d'hospitalisation si le patient n'est pas mort ou guérie
+        Sinon si la date de fin_surveillance passe à Null -> Erreur : Un patient décédé ou guéri doit avoir une date de fin_surveillance
+
+    Vérification old.debut_surveillance < new.fin_surveillance
+
+    Séléction du numéro de l'hopital pour pouvoir l'afficher
+
+    Si le numéro de l'hopital n'est pas Null alors on update fin_hospitalisation d'hospitalise
+     */
 
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
         raise exception 'le patient a été réanimé ?';
