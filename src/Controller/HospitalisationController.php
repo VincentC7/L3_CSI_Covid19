@@ -69,7 +69,7 @@ class HospitalisationController extends Controller {
         if ($resultat) {
             $this->afficher_message('L\'hospitalisation à bien été arrêtée');
         }else{
-            $this->afficher_message('La date de début ne peut pas être supérieur à la date de fin !', 'echec');
+            $this->afficher_message($stmt_insert->errorInfo()[2], 'echec');
         }
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
     }
