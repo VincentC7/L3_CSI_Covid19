@@ -82,6 +82,7 @@ begin
         raise notice '%', noHosp;
 
         if(noHosp is not null) then
+            raise notice 'papapap';
             update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu and noHospitalisation = noHosp;
         end if;
 
@@ -247,6 +248,20 @@ begin
     close c_patient;
 end;
 $check_dayli_etat_patient$ language plpgsql;
+
+
+--transfert d'un patient
+create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+declare
+    numS TEXT;
+begin
+    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;
+
+    update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
+    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
+end;
+$$ language plpgsql;
+
 
 
 --Insertion des données

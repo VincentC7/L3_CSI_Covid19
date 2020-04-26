@@ -159,7 +159,7 @@ class PatientController extends Controller {
         if ($resultat) {
             $this->afficher_message('Le patient a bien été modifié');
         }else{
-            $this->afficher_message('Les information du patient ne sont pas corrects', 'echec');
+            $this->afficher_message($stmt_update->errorInfo()[2], 'echec');
         }
 
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
