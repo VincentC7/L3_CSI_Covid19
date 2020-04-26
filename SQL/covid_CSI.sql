@@ -63,28 +63,35 @@ $$ language plpgsql;
 create or replace function proc_upd_patient() returns trigger as $proc_upd_patient$
 declare
     noHosp integer;
-    fin_hosp timestamp;
 begin
+
+    if(old.fin_surveillance is not null) then
+        raise exception 'Un patient ne peut pas être re-contaminé';
+    end if;
 
     if (old.etat_sante = 'décédé' and new.etat_sante != old.etat_sante) then
         raise exception 'le patient a été réssusciter ?';
     end if;
 
-    if (not new.fin_surveillance is null or ((new.etat_sante in ('aucun symptome', 'décédé')) and new.etat_sante != old.etat_sante)) then
-        if (new.etat_sante not in ('aucun symptome', 'décédé')) then
-            raise exception 'il ne peut pas y avoir de fin d hospitalisation si le patient n est pas soit mort soit guérie';
-        elseif (new.fin_surveillance is null and new.etat_sante in ('décédé')) then
-            raise exception 'si le patient est décédé, une date de fin_surveillance doit être renseignée';
+    --un patient décédé doit avoir une date de fin de surveillance
+    if(new.fin_surveillance is null and new.etat_sante = 'décédé') then
+        raise exception 'Une date de fin de surveillance doit être renseignée si le patient est décédé';
+    elseif(new.fin_surveillance is not null) then
+        --check du patient soit décédé soit aucun symptome
+        if(new.etat_sante not in ('décédé', 'aucun symptome')) then
+            raise exception 'Un patient non surveillé doit être dans un état final';
         end if;
 
+        --check date
         perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
+
+        --check si il y a une hospitalisation en cours
         select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu and fin_hospitalisation is null;
-        raise notice '%', noHosp;
 
+        --arrêt de l'hospitalisation si il y en a une
         if(noHosp is not null) then
-            update Hospitalise set fin_hospitalisation = new.fin_surveillance where Hospitalise.num_secuP = old.num_secu and noHospitalisation = noHosp;
+            update Hospitalise set fin_hospitalisation = new.fin_surveillance where noHospitalisation = noHosp;
         end if;
-
     end if;
 
     return new;
