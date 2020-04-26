@@ -97,13 +97,15 @@ begin
         if(new.fin_surveillance is not null) then
             perform f_check_date_deb_sup_fin(old.debut_surveillance, new.fin_surveillance);
         end if;
-        
+
         --check si il y a une hospitalisation en cours
         select noHospitalisation into noHosp from hospitalise where Hospitalise.num_secuP = old.num_secu and fin_hospitalisation is null;
 
         --arrêt de l'hospitalisation si il y en a une
-        if(noHosp is not null) then
+        if(noHosp is not null and new.fin_surveillance is not null) then
             update Hospitalise set fin_hospitalisation = new.fin_surveillance where noHospitalisation = noHosp;
+        elseif(noHosp is not null) then
+            update Hospitalise set fin_hospitalisation = now() where noHospitalisation = noHosp;
         end if;
     end if;
 
