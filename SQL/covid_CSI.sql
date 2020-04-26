@@ -64,6 +64,21 @@ create or replace function proc_upd_patient() returns trigger as $proc_upd_patie
 declare
     noHosp integer;
 begin
+    /*
+    Si le patient est décédé est que sont état de santé change il a été réanimé
+
+    Si le patient à une date de fin de surveillance différente de null
+    OU que son nouvel état de santé correspond à {aucun symptome, décédé}
+    ET que son nouvel état de santé  et différent de l'ancien
+        Si le nouvel état de santé n'est pas dans {aucun symptome, décédé} -> Erreur : Pas de fin d'hospitalisation si le patient n'est pas mort ou guérie
+        Sinon si la date de fin_surveillance passe à Null -> Erreur : Un patient décédé ou guéri doit avoir une date de fin_surveillance
+
+    Vérification old.debut_surveillance < new.fin_surveillance
+
+    Séléction du numéro de l'hopital pour pouvoir l'afficher
+
+    Si le numéro de l'hopital n'est pas Null alors on update fin_hospitalisation d'hospitalise
+     */
 
     if(old.fin_surveillance is not null) then
         raise exception 'Un patient ne peut pas être re-contaminé';
@@ -254,6 +269,20 @@ begin
     close c_patient;
 end;
 $check_dayli_etat_patient$ language plpgsql;
+
+
+--transfert d'un patient
+create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+declare
+    numS TEXT;
+begin
+    select num_secuP into numS from Hospitalise where noHospitalisation = noHospi;
+
+    update Hospitalise set fin_hospitalisation = dateFin where noHospitalisation = noHospi;
+    insert into hospitalise (debut_hospitalisation, noHopital, num_secuP) values (dateFin, newH, num_secuP);
+end;
+$$ language plpgsql;
+
 
 
 --Insertion des données
