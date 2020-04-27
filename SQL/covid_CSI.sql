@@ -293,7 +293,7 @@ $check_dayli_etat_patient$ language plpgsql;
     La fonction va vérifier que l'hopital cible a de la place pour accueillir le patient
     Sinon le transfert n'aura pas lieu
 */
-create function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
+create or replace function proc_trf_patient(noHospi integer, newH integer, dateFin timestamp) returns void as $$
 declare
     numS TEXT;
     nb_places integer;

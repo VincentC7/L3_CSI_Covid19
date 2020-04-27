@@ -73,4 +73,52 @@ class HospitalisationController extends Controller {
         }
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
     }
+
+    public function demandetransfer (RequestInterface $request, ResponseInterface $response, $args){
+        $pdo = $this->get_PDO();
+        $stmt_hopitaux = $pdo->prepare("Select * from hopital where nb_libres > 0 and nodep = ? and nohopital != ?");
+        $stmt_patient = $pdo->prepare("Select * from patient where num_secu = ?");
+        $stmt_hopital_courant = $pdo->prepare("Select * from hopital where nohopital = ?");
+
+        $stmt_patient->execute([$args['numsecu']]);
+        $patient = $stmt_patient->fetch();
+        $stmt_hopital_courant->execute([$args['nohopital']]);
+        $hopital = $stmt_hopital_courant->fetch();
+        $stmt_hopitaux->execute([$patient['nodep'],$hopital['nohopital']]);
+
+        $hopitaux = $stmt_hopitaux->fetchAll(PDO::FETCH_ASSOC);
+        $this->render($response,'pages/hospitalisation.twig', ['hopitaux'=> $hopitaux, 'patient'=>$patient, 'transfer'=>true]);
+    }
+
+    public function transferer(RequestInterface $request, ResponseInterface $response, $args){
+        //Récupération de l'acces base
+        $pdo = $this->get_PDO();
+
+        //Verification des champs
+        $params = $request->getParams();
+        $erreurs = [];
+        $stmt_hosp = $pdo->prepare("Select nohopital,nohospitalisation from hospitalise where num_secup = ?");
+        $stmt_hosp->execute([$args['numsecu']]);
+        $hospitalisation_courante = $stmt_hosp->fetch();
+
+        //Vérification du num tel et code post => bon format
+        Validator::dateTime()->validate($params['debut_hosp']) || $erreurs['debut_hosp'] = "Format incorrect";
+
+        if (!empty($erreurs)){
+            $this->afficher_message('Le transfère  n\'a été effectué, format de la date invalide (jj/mm/aaaa hh:min)','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'transferpatient', ['numsecu'=>$args['numsecu'],'nohopital'=>$hospitalisation_courante['nohopital']]);
+        }
+
+        $stmt_transfer = $pdo->prepare('select proc_trf_patient(?,?,?)');
+        $resultat = $stmt_transfer->execute([$hospitalisation_courante['nohospitalisation'],$args['newHopital'],$params['debut_hosp']]);
+        if ($resultat) {
+            $this->afficher_message('L\'hospitalisation à bien été arrêtée');
+        }else{
+            $this->afficher_message($stmt_transfer->errorInfo()[2], 'echec');
+            return $this->redirect($response,'transferpatient', ['numsecu'=>$args['numsecu'],'nohopital'=>$hospitalisation_courante['nohopital']]);
+        }
+        return $this->redirect($response,'voirHopital', ['nohopital'=>$args['newHopital']]);
+    }
+
 }

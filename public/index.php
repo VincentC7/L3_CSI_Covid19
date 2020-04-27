@@ -36,9 +36,13 @@ $app->get('/Patient', PatientController::class.":index")->setName("patient");
 $app->post('/Patient', PatientController::class.":new");
 $app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
+
+
 $app->get('/Patient/{numsecu}/Hospitaliser', HospitalisationController::class.":index")->setName('hospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitaliser/{nohopital}', HospitalisationController::class.":new")->setName('dohospitaliserPatient');
 $app->post('/Patient/{numsecu}/Hospitalisation/{noHosp}', HospitalisationController::class.":update")->setName('fin_hospitalisation');
+$app->get('/Patient/{numsecu}/Transferer/{nohopital}', HospitalisationController::class.":demandetransfer")->setName('transferpatient');
+$app->post('/Patient/{numsecu}/Transferer/{newHopital}', HospitalisationController::class.":transferer")->setName('dotransfererPatient');
 
 //pages de gestion des hopitaux
 $app->get('/Hopital', HopitalController::class.":index")->setName("hopitaux");
