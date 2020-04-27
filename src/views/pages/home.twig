@@ -13,9 +13,18 @@
         </div>
         <div class="graph">
             <canvas id="bilan_etat_sante"></canvas>
-        </div
-        ><div class="graph">
+        </div>
+        <div class="graph">
             <canvas id="bilan_age"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="bilan_jour_gueris"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="bilan_jour_mort"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="bilan_jour_surveille"></canvas>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -149,8 +158,131 @@
                 title :{
                     text: "Population surveillé en fonction de leur age"
                 },
-                legend:{
-                    visible: false
+            }
+        });
+
+        var suspects_dates = [];
+        {% for date in bilan_journalier.suspect.dates %}
+            suspects_dates.push('{{ date }}');
+        {% endfor %}
+
+        var suspects_nb = [];
+        {% for nb in bilan_journalier.suspect.nb %}
+        suspects_nb.push('{{ nb }}');
+        {% endfor %}
+
+        Chart.defaults.global.elements.point.backgroundColor = 'rgb(241, 196, 15)';
+        ctx = document.getElementById('bilan_jour_surveille').getContext('2d');
+        ctx.canvas.width = 600;
+        ctx.canvas.height = 300;
+        var bilan_jour_surveille = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: suspects_dates,
+                datasets: [{
+                    label: 'Nombre de cas/Jours',
+                    data: suspects_nb,
+                    backgroundColor : [
+                        'rgba(241, 196, 15,0.4)',
+                    ],
+                    borderColor : [
+                        'rgb(241, 196, 15)',
+                    ],
+                }],
+
+            },
+            options: {
+                title :{
+                    text: "Evolution du nombre de surveillé en fonction du temps"
+                },
+                scales: {
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+
+        var mort_dates = [];
+        {% for date in bilan_journalier.mort.dates %}
+        mort_dates.push('{{ date }}');
+        {% endfor %}
+
+        var mort_nb = [];
+        {% for nb in bilan_journalier.mort.nb %}
+        mort_nb.push('{{ nb }}');
+        {% endfor %}
+
+        Chart.defaults.global.elements.point.backgroundColor = 'rgb(149, 165, 166)';
+        ctx = document.getElementById('bilan_jour_mort').getContext('2d');
+        ctx.canvas.width = 600;
+        ctx.canvas.height = 300;
+        var bilan_jour_mort = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: mort_dates,
+                datasets: [{
+                    label: 'Nombre de cas/Jours',
+                    data: mort_nb,
+                    backgroundColor : [
+                        'rgba(149, 165, 166,0.4)',
+                    ],
+                    borderColor : [
+                        'rgb(149, 165, 166)',
+                    ],
+                }],
+
+            },
+            options: {
+                title :{
+                    text: "Evolution du nombre de mort en fonction du temps"
+                },
+                scales: {
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+
+        var gueris_dates = [];
+        {% for date in bilan_journalier.gueris.dates %}
+        gueris_dates.push('{{ date }}');
+        {% endfor %}
+
+        var gueris_nb = [];
+        {% for nb in bilan_journalier.gueris.nb %}
+        gueris_nb.push('{{ nb }}');
+        {% endfor %}
+
+        Chart.defaults.global.elements.point.backgroundColor = 'rgb(46, 204, 113)';
+        ctx = document.getElementById('bilan_jour_gueris').getContext('2d');
+        ctx.canvas.width = 600;
+        ctx.canvas.height = 300;
+        var bilan_jour_gueris = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: gueris_dates,
+                datasets: [{
+                    label: 'Nombre de cas/Jours',
+                    data: gueris_nb,
+                    backgroundColor : [
+                        'rgba(46, 204, 113,0.4)',
+                    ],
+                    borderColor : [
+                        'rgb(46, 204, 113)',
+                    ],
+                }],
+
+            },
+            options: {
+                title :{
+                    text: "Evolution du nombre de guéris en fonction du temps"
+                },
+                scales: {
+                    yAxes: [{
+                        stacked: true
+                    }]
                 }
             }
         });

@@ -41,6 +41,7 @@
                 <div class="col-10 info-patient">
                     <div data-num_secu="{{ patient.num_secu }}" class="nom-patient">{{ patient.nom }}</div>
                     <div class="prenom-patient bottom">{{ patient.prenom }}</div>
+                    <div class="">{{ patient.tel }}</div>
                     <div class="info-etat-sante
                         {% if patient.etat_sante == 'fièvre et pb respiratoires' %} sante-fievre-pb-resp
                         {% elseif patient.etat_sante == 'fièvre' %} sante-fievre

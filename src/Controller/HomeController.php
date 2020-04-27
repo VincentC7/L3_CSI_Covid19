@@ -13,6 +13,6 @@ class HomeController extends Controller {
      */
     public function home(RequestInterface $request, ResponseInterface $response){
         $bilan = new Bilan($this->get_PDO());
-        $this->render($response,'pages/home.twig', ['bilan'=>$bilan->get_statisiques()]);
+        $this->render($response,'pages/home.twig', ['bilan'=>$bilan->get_statisiques(),'bilan_journalier'=>$bilan->get_bilan_epidemie('DD-MON-YYYY')]);
     }
 }

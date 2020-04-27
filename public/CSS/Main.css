@@ -43,11 +43,15 @@
     align-self: center;
 }
 
-.prenom-patient, .ville-hopital{
+.prenom-patient, .ville-hopital, .num-patient{
     height: fit-content;
     font-size: 20px;
     margin-right: 0.35em;
     align-self: center;
+}
+.num-patient{
+    color: #1abc9c;
+    font-weight: bold;
 }
 
 .sante-mort{
