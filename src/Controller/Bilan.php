@@ -219,11 +219,9 @@ class Bilan
         $stmt->execute();
         $bilan['suspect']['dates'];
         $bilan['suspect']['nb'];
-        $sum=0;
         while ($data = $stmt->fetch()) {
             $bilan['suspect']['dates'][] = $data[1];
-            $sum+=$data[0];
-            $bilan['suspect']['nb'][] = $sum;
+            $bilan['suspect']['nb'][] = $data[0];
         }
         $stmt = $this->pdo->prepare("select count(to_char(fin_surveillance,'$format')),to_char(fin_surveillance,'$format') 
                                                                 from patient 
@@ -231,24 +229,20 @@ class Bilan
         $stmt->execute();
         $bilan['mort']['dates'];
         $bilan['mort']['nb'];
-        $sum=0;
         while ($data = $stmt->fetch()) {
             $bilan['mort']['dates'][] = $data[1];
-            $sum+=$data[0];
-            $bilan['mort']['nb'][] = $sum;
+            $bilan['mort']['nb'][] = $data[0];
         }
         $stmt = $this->pdo->prepare("select count(to_char(fin_surveillance,'$format')),to_char(fin_surveillance,'$format')
                                                                 from patient 
-                                                                group by to_char(fin_surveillance,'$format'),etat_sante having etat_sante='aucun symptome'");
+                                                                group by to_char(fin_surveillance,'$format'),etat_sante,fin_surveillance having etat_sante='aucun symptome' and fin_surveillance is not null");
         $stmt->execute();
         $stmt->execute();
         $bilan['gueris']['dates'];
         $bilan['gueris']['nb'];
-        $sum=0;
         while ($data = $stmt->fetch()) {
             $bilan['gueris']['dates'][] = $data[1];
-            $sum+=$data[0];
-            $bilan['gueris']['nb'][] = $sum;
+            $bilan['gueris']['nb'][] = $data[0];
         }
         return $bilan;
     }
@@ -262,5 +256,7 @@ class Bilan
 
         return $interval->format($format);
     }
+
+
 
 }

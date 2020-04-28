@@ -6,6 +6,7 @@ namespace L3_CSI_Covid19\Controller;
 use PDO;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Respect\Validation\Rules\Json;
 use Respect\Validation\Validator;
 
 class PatientController extends Controller {
@@ -16,28 +17,10 @@ class PatientController extends Controller {
      */
     public function index(RequestInterface $request, ResponseInterface $response){
         $pdo = $this->get_PDO();
-        $stmt_patients = $pdo->prepare("Select * from patient order by nom");
         $stmt_departements = $pdo->prepare("Select * from departement");
-        $stmt_patients->execute();
         $stmt_departements->execute();
-        $patients = $stmt_patients->fetchAll(PDO::FETCH_ASSOC);
         $departements = $stmt_departements->fetchAll(PDO::FETCH_ASSOC);
-        $count=0;
-
-        //Ajout des hospitalisations a chaques patients
-        foreach ($patients as $patient){
-            $patients[$count]['hospitalise'] = false;
-            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation, nomhop from hospitalise INNER JOIN hopital ON hospitalise.nohopital = hopital.nohopital where num_secup = ? ");
-            $stmt->execute([$patient['num_secu']]);
-            $hospitalisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($hospitalisations as $hospitalisation){
-                if (is_null($hospitalisation['fin_hospitalisation'])){
-                    $patients[$count]['hospitalise'] = $hospitalisation['nomhop'];
-                }
-            }
-            $count++;
-        }
-        $this->render($response,'pages/list_patients.twig',['patients'=> $patients, 'departements' =>$departements]);
+        $this->render($response,'pages/list_patients.twig',['departements' =>$departements]);
     }
 
     public function new(RequestInterface $request, ResponseInterface $response){
@@ -163,6 +146,35 @@ class PatientController extends Controller {
         }
 
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
+    }
+
+    public function rechercher(RequestInterface $request, ResponseInterface $response, $args){
+        $pdo = $this->get_PDO();
+        $params = $request->getParams();
+        $recherche = $params['recherche'];
+        $type_recherche = $params['types_recherche'];
+        if ($type_recherche == 0){
+            $stmt = $pdo->prepare("select * from patient where upper(nom) LIKE upper(?) or lower(prenom) LIKE lower(?) limit 100");
+            $stmt->execute(['%'.$recherche.'%','%'.$recherche.'%']);
+        }else{
+            $stmt = $pdo->prepare("select * from patient where num_secu LIKE ? limit 100");
+            $stmt->execute(['%'.$recherche.'%']);
+        }
+        $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $count=0;
+        foreach ($patients as $patient){
+            $patients[$count]['hospitalise'] = false;
+            $stmt = $pdo->prepare("Select debut_hospitalisation, fin_hospitalisation, nomhop from hospitalise INNER JOIN hopital ON hospitalise.nohopital = hopital.nohopital where num_secup = ? ");
+            $stmt->execute([$patient['num_secu']]);
+            $hospitalisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($hospitalisations as $hospitalisation){
+                if (is_null($hospitalisation['fin_hospitalisation'])){
+                    $patients[$count]['hospitalise'] = $hospitalisation['nomhop'];
+                }
+            }
+            $count++;
+        }
+        return json_encode($patients);
     }
 
     private function est_champ_null($var){

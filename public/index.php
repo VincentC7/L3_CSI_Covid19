@@ -33,6 +33,7 @@ $app->get('/', HomeController::class.":home")->setName("home");
 
 //pages de gestion des patients
 $app->get('/Patient', PatientController::class.":index")->setName("patient");
+$app->post('/Patient/Rechercher', PatientController::class.":rechercher")->setName("test");
 $app->post('/Patient', PatientController::class.":new");
 $app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
@@ -53,6 +54,7 @@ $app->get('/Hopital/{nohopital}', HopitalController::class.":view")->setName("vo
 $app->get('/Departements', DepartementController::class.":index")->setName("departements");
 $app->post('/Departements/{departement}', DepartementController::class.":update")->setName("modifier_departement");
 $app->get('/Departements/{nodep}', DepartementController::class.":view")->setName("list_confines");
+
 
 
 $app->run();

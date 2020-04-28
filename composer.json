@@ -6,7 +6,8 @@
         "ext-openssl":"*",
         "slim/twig-view": "^2.1",
         "respect/validation": "^2.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+      "ext-json": "*"
     },
 
     "autoload":{

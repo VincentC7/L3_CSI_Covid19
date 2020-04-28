@@ -2,6 +2,7 @@
   "name": "L3_CSI_Covid19",
   "version": "1.0.0",
   "dependencies": {
+    "ajax": "0.0.4",
     "chart.js": "^2.9.3"
   }
 }
