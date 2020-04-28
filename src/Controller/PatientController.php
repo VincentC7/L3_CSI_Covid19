@@ -115,15 +115,73 @@ class PatientController extends Controller {
         $params = $request->getParams();
         $erreurs = [];
 
-        //Vérification du num tel et code post => bon format
+        //Vérification du num tel, code post et num secu => bon format
         Validator::intVal()->length(5,5)->validate($params['codePost']) || $erreurs['codePost'] = "Format incorrect";
         (Validator::length(10,10)->validate($params['tel']) && is_numeric($params['tel'])) || $erreurs['tel'] = "Format incorrect";
+        Validator::intVal()->length(15,15)->validate($params['num_secu']) || $erreurs['num_secu'] = "Format incorrect";
 
+        $this->est_champ_null($params['num_secu']) || $erreurs['num_secu'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['nom']) || $erreurs['nom'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['prenom']) || $erreurs['prenom'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['rue']) || $erreurs['rue'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['ville']) || $erreurs['ville'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['codePost']) || $erreurs['codePost'] = "Veuillez specifier ce champ";
         $this->est_champ_null($params['tel']) || $erreurs['tel'] = "Veuillez specifier ce champ";
-        $this->est_champ_null($params['Etat_sante']) || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
+        $this->est_champ_null($params['sexe']) || $erreurs['sexe'] = "Veuillez specifier ce champ";
+
+        //Verification de l'existance du patient
+        if (!isset($erreurs['num_secu'])){
+            $stmt = $pdo->prepare("SELECT nom FROM patient WHERE num_secu = ? ");
+            $stmt->execute([$params['num_secu']]);
+            $patient = $stmt->fetch()['nom'];
+            !isset($patient['nom']) ||  $erreurs['num_secu'] = "Ce patient existe déjà";
+        }
+        //Affichage des erreurs s'il y en a
+        if (!empty($erreurs)){
+            $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
+        }
+
+        $stmt_update = $pdo->prepare('UPDATE patient SET num_secu = ?, nom=?, prenom=?,sexe=?,date_naissance=?,ruep = ?, villep = ?, codepostp = ?, num_tel = ?, fin_surveillance = ? where num_secu = ?');
+        $resultat = $stmt_update->execute([$params['num_secu'],$params['nom'],$params['prenom'],$params['sexe'],$params['date_naiss'],$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['fin_surveillance'],$args['numsecu']]);
+
+        if ($resultat) {
+            $this->afficher_message('Le patient a bien été modifié');
+        }else{
+            $this->afficher_message($stmt_update->errorInfo()[2], 'echec');
+        }
+        return $this->redirect($response,'voirPatient', ['numsecu'=>$params['num_secu']]);
+    }
+
+    public function update_etat_sante(RequestInterface $request, ResponseInterface $response, $args){
+        //Récupération de l'acces base
+        $pdo = $this->get_PDO();
+
+        //Verification des champs
+        $params = $request->getParams();
+        $erreurs = [];
+
+        //Vérification du num tel et code post => bon format
+        $params['Etat_sante'] === "fièvre"
+            || $params['Etat_sante'] === "aucun symptome"
+            || $params['Etat_sante'] === "fièvre et pb respiratoires"
+            || $params['Etat_sante'] === "aucun symptome"
+            || $params['Etat_sante'] === "inconscient"
+            || $params['Etat_sante'] === "décédé"
+            || $erreurs['Etat_sante'] = "Veuillez specifier ce champ";
+
+        if ($params['Etat_sante'] === "décédé" && !Validator::dateTime()->validate($params['fin_surveillance'])){
+            $this->afficher_message('Si le patient est décédé indiquez une date de fin surveillance','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
+        }
+
+        if (Validator::dateTime()->validate($params['fin_surveillance']) && ($params['Etat_sante']=="fièvre et pb respiratoires" || $params['Etat_sante']=="inconscient" || $params['Etat_sante']=="fièvre")){
+            $this->afficher_message('Vous ne pouvez pas mettre fin à la surveillance si le patient présente des symptomes','echec');
+            $this->afficher_message($erreurs,'erreurs');
+            return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
+        }
 
         if (!empty($erreurs)){
             $this->afficher_message('Certains champs n\'ont pas été rempli correctement','echec');
@@ -132,19 +190,18 @@ class PatientController extends Controller {
         }
 
         if (Validator::dateTime()->validate($params['fin_surveillance'])){
-            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ?, fin_surveillance = ? where num_secu = ?');
-            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'],$params['fin_surveillance'],$args['numsecu']]);
+            $stmt_update = $pdo->prepare('UPDATE patient SET etat_sante = ?, fin_surveillance = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['Etat_sante'],$params['fin_surveillance'],$args['numsecu']]);
         }else{
-            $stmt_update = $pdo->prepare('UPDATE patient SET ruep = ?, villep = ?, codepostp = ?, num_tel = ?, etat_sante = ? where num_secu = ?');
-            $resultat = $stmt_update->execute([$params['rue'],$params['ville'],$params['codePost'],$params['tel'],$params['Etat_sante'], $args['numsecu']]);
+            $stmt_update = $pdo->prepare('UPDATE patient SET etat_sante = ? where num_secu = ?');
+            $resultat = $stmt_update->execute([$params['Etat_sante'], $args['numsecu']]);
         }
 
         if ($resultat) {
-            $this->afficher_message('Le patient a bien été modifié');
+            $this->afficher_message("L'état de santé du patient a bien été modifié");
         }else{
             $this->afficher_message($stmt_update->errorInfo()[2], 'echec');
         }
-
         return $this->redirect($response,'voirPatient', ['numsecu'=>$args['numsecu']]);
     }
 

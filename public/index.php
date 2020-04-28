@@ -37,6 +37,7 @@ $app->post('/Patient/Rechercher', PatientController::class.":rechercher")->setNa
 $app->post('/Patient', PatientController::class.":new");
 $app->get('/Patient/{numsecu}', PatientController::class.":view")->setName('voirPatient');
 $app->post('/Patient/{numsecu}', PatientController::class.":update");
+$app->post('/Patient/{numsecu}/ModifierEtatSanter', PatientController::class.":update_etat_sante")->setName('modif_etat_patient');
 
 
 $app->get('/Patient/{numsecu}/Hospitaliser', HospitalisationController::class.":index")->setName('hospitaliserPatient');

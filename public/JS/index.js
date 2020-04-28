@@ -10,6 +10,16 @@ $(".btn-swap").click(function () {
    $(this).parent().parent().parent().next().toggleClass('hidden');
 });
 
+$(".btn-modif-patient").click(function () {
+    $('.form-modif-patient').toggleClass('hidden')
+});
+
+$(".btn-modif-etat-patient").click(function () {
+    $('.form-modif-etat-patient').toggleClass('hidden')
+});
+
+
+
 var type_recherche_patient = 0;
 $('#rechercher-patient').keyup(function () {
     var search = $(this).val();

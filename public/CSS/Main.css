@@ -121,7 +121,7 @@
     align-self: center;
 }
 
-.btn-list-patient,  .btn-stop-hosp{
+.btn-list-patient,  .btn-stop-hosp, .btn-modif-patient, .btn-modif-etat-patient{
     text-align: end;
     align-self: center;
 }
@@ -161,5 +161,9 @@ h1{
 
 .danger{
     color: #e74c3c;
+}
+
+a:not([href]) {
+    color: #f6f8fa;
 }
 

@@ -1,25 +1,51 @@
 {% extends "layout.twig" %}
 
 {% block content %}
+    {% if message.valide %}
+        <div class="alert alert-success">
+            {{ message.valide }}
+        </div>
+    {% endif %}
+
+    {% if message.echec %}
+        <div class="alert alert-danger">
+            {{ message.echec }}
+        </div>
+    {% endif %}
     <div class="fiche_patient p-3 w-75 m-auto">
-        <h2>{{ patient.nom }}</h2>
-        <h5>{{ patient.prenom }}</h5>
+        <div class="row">
+            <h2 class="col-10">{{ patient.nom }}</h2>
+            {% if  not patient.fin_surveillance %}
+                <div class="col-2 btn-modif-patient">
+                    <svg class="icon" id="param-patient" xmlns="http://www.w3.org/2000/svg" height="512px"
+                         viewBox="0 0 512 512" width="512px">
+                        <g>
+                            <path d="m499.953125 197.703125-39.351563-8.554687c-3.421874-10.476563-7.660156-20.695313-12.664062-30.539063l21.785156-33.886719c3.890625-6.054687 3.035156-14.003906-2.050781-19.089844l-61.304687-61.304687c-5.085938-5.085937-13.035157-5.941406-19.089844-2.050781l-33.886719 21.785156c-9.84375-5.003906-20.0625-9.242188-30.539063-12.664062l-8.554687-39.351563c-1.527344-7.03125-7.753906-12.046875-14.949219-12.046875h-86.695312c-7.195313 0-13.421875 5.015625-14.949219 12.046875l-8.554687 39.351563c-10.476563 3.421874-20.695313 7.660156-30.539063 12.664062l-33.886719-21.785156c-6.054687-3.890625-14.003906-3.035156-19.089844 2.050781l-61.304687 61.304687c-5.085937 5.085938-5.941406 13.035157-2.050781 19.089844l21.785156 33.886719c-5.003906 9.84375-9.242188 20.0625-12.664062 30.539063l-39.351563 8.554687c-7.03125 1.53125-12.046875 7.753906-12.046875 14.949219v86.695312c0 7.195313 5.015625 13.417969 12.046875 14.949219l39.351563 8.554687c3.421874 10.476563 7.660156 20.695313 12.664062 30.539063l-21.785156 33.886719c-3.890625 6.054687-3.035156 14.003906 2.050781 19.089844l61.304687 61.304687c5.085938 5.085937 13.035157 5.941406 19.089844 2.050781l33.886719-21.785156c9.84375 5.003906 20.0625 9.242188 30.539063 12.664062l8.554687 39.351563c1.527344 7.03125 7.753906 12.046875 14.949219 12.046875h86.695312c7.195313 0 13.421875-5.015625 14.949219-12.046875l8.554687-39.351563c10.476563-3.421874 20.695313-7.660156 30.539063-12.664062l33.886719 21.785156c6.054687 3.890625 14.003906 3.039063 19.089844-2.050781l61.304687-61.304687c5.085937-5.085938 5.941406-13.035157 2.050781-19.089844l-21.785156-33.886719c5.003906-9.84375 9.242188-20.0625 12.664062-30.539063l39.351563-8.554687c7.03125-1.53125 12.046875-7.753906 12.046875-14.949219v-86.695312c0-7.195313-5.015625-13.417969-12.046875-14.949219zm-152.160156 58.296875c0 50.613281-41.179688 91.792969-91.792969 91.792969s-91.792969-41.179688-91.792969-91.792969 41.179688-91.792969 91.792969-91.792969 91.792969 41.179688 91.792969 91.792969zm0 0"
+                                  data-original="#000000" class="active-path" data-old_color="#000000" fill="#4F565C"/>
+                        </g>
+                    </svg>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <h5 class="col-md-12">{{ patient.prenom }}</h5>
+        </div>
         <div class="row mb-2">
-            <div class="col-6">Numéro de sécurité social </div>
+            <div class="col-6">Numéro de sécurité social</div>
             <div class="col-5">{{ patient.num_secu }}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-6 "> Date naissance </div>
+            <div class="col-6 "> Date naissance</div>
             <div class="col-5">{{ patient.date_naissance }}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-6 ">Sexe  </div>
+            <div class="col-6 ">Sexe</div>
             <div class="col-5">{% if patient.sexe == 'M' %} Homme {% else %} Femme{% endif %}</div>
         </div>
         <hr>
         <div class="row mb-2">
             <div class="col-6 ">Adresse</div>
-            <div class="col-5">{{ patient.ruep}} {{ patient.villep }}, {{ patient.codepostp }}</div>
+            <div class="col-5">{{ patient.ruep }} {{ patient.villep }}, {{ patient.codepostp }}</div>
         </div>
         <div class="row mb-2">
             <div class="col-6 ">Département</div>
@@ -33,7 +59,27 @@
         <hr>
         <div class="row mb-2">
             <div class="col-6 ">Etat de santé</div>
-            <div class="col-5">{{ patient.etat_sante }}</div>
+            <div class="col-4">{{ patient.etat_sante }}</div>
+            {% if  not patient.fin_surveillance %}
+                <div class="col-2 btn-modif-etat-patient">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="modifier-etat-sante" enable-background="new 0 0 512 512"
+                         height="512px" viewBox="0 0 512 512" width="512px" class="icon">
+                        <g>
+                            <g>
+                                <path d="m115.722 227.067 35.762-71.525c7.672-15.344 23.095-24.875 40.25-24.875s32.578 9.532 40.25 24.875l40.083 80.166 24.019-48.04c7.671-15.344 23.094-24.876 40.25-24.876 17.155 0 32.578 9.532 40.25 24.876l19.696 39.399h77.115c4.302-17.301 6.472-34.465 6.472-51.4 0-90.279-56.406-143.533-127.467-143.533-10.812 0-63.886-.31-96.4 55.63-32.514-55.94-85.588-55.63-96.4-55.63-71.014 0-127.467 53.204-127.467 143.533 0 16.935 2.169 34.099 6.472 51.4z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#464C51"/>
+                                <path d="m337.951 305.186-25.634 51.271c-7.671 15.344-23.094 24.876-40.25 24.876-17.155 0-32.578-9.532-40.25-24.875l-40.084-80.168-7.951 15.902c-7.672 15.344-23.095 24.875-40.25 24.875h-63.91c53.355 80.684 138.017 141.809 168.515 160.575 2.411 1.483 5.136 2.225 7.861 2.225s5.451-.742 7.861-2.225c30.46-18.743 115.179-79.941 168.513-160.575h-63.908c-11.574 0-22.364-4.342-30.513-11.881z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#464C51"/>
+                                <path d="m497 257.067h-119.262l-27.987-55.982c-2.541-5.082-7.735-8.292-13.417-8.292s-10.876 3.21-13.417 8.292l-50.851 101.708-66.916-133.834c-2.541-5.082-7.735-8.292-13.417-8.292s-10.875 3.21-13.417 8.292l-44.054 88.108h-119.262c-8.284 0-15 6.716-15 15s6.716 15 15 15h128.533c5.682 0 10.875-3.21 13.417-8.292l34.784-69.567 66.917 133.834c2.541 5.082 7.735 8.292 13.417 8.292s10.876-3.21 13.417-8.292l50.85-101.706 18.717 37.439c2.541 5.082 7.735 8.292 13.417 8.292h128.531c8.284 0 15-6.716 15-15s-6.716-15-15-15z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#464C51"/>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            {% endif %}
         </div>
         {% if not patient.fin_surveillance %}
             <div class="row mb-2">
@@ -62,25 +108,15 @@
 
         {% endif %}
     </div>
-    <div>
-        {% if not patient.fin_surveillance %}
+    {% if not patient.fin_surveillance %}
+        <div class="hidden form-modif-patient">
             <hr>
             <h1>Modifier les informations du patient</h1>
-            {% if message.valide %}
-                <div class="alert alert-success">
-                    {{ message.valide }}
-                </div>
-            {% endif %}
-
-            {% if message.echec %}
-                <div class="alert alert-danger">
-                    {{ message.echec }}
-                </div>
-            {% endif %}
             <form action="{{ path_for('voirPatient',{numsecu: patient.num_secu}) }}" method="post">
                 <div class="form-group">
                     <label for="input_numsecu">Numéro de sécurité social</label>
-                    <input type="text" class="form-control {% if message.erreurs.num_secu %}border border-danger{% endif %}"
+                    <input type="text"
+                           class="form-control {% if message.erreurs.num_secu %}border border-danger{% endif %}"
                            id="input_numsecu" name="num_secu" value="{{ patient.num_secu }}">
                     {% if message.erreurs.num_secu %}
                         <span class="help-block text-danger"> {{ message.erreurs.num_secu }}</span>
@@ -89,7 +125,8 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="Input_name">Nom</label>
-                        <input type="text" class="form-control  {% if message.erreurs.nom %}border border-danger{% endif %}"
+                        <input type="text"
+                               class="form-control  {% if message.erreurs.nom %}border border-danger{% endif %}"
                                id="Input_name" name="nom" value="{{ patient.nom }}">
                         {% if message.erreurs.nom %}
                             <span class="help-block text-danger"> {{ message.erreurs.nom }}</span>
@@ -97,7 +134,8 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputPassword4">Prénom</label>
-                        <input type="text" class="form-control  {% if message.erreurs.prenom %}border border-danger{% endif %}"
+                        <input type="text"
+                               class="form-control  {% if message.erreurs.prenom %}border border-danger{% endif %}"
                                id="inputPassword4" name="prenom" value="{{ patient.prenom }}">
                         {% if message.erreurs.prenom %}
                             <span class="help-block text-danger"> {{ message.erreurs.prenom }}</span>
@@ -118,7 +156,7 @@
                         <label for="tel">Numéro de téléphone</label>
                         <input type="tel"
                                class="form-control {% if message.erreurs.tel %}border border-danger{% endif %}"
-                               id="tel" value="{{ patient.num_tel }}" name="tel">
+                               id="tel" value="{{patient.num_tel}}" name="tel">
                         {% if message.erreurs.tel %}
                             <span class="help-block text-danger"> {{ message.erreurs.tel }}</span>
                         {% endif %}
@@ -149,7 +187,8 @@
                                 name="departement">
                             <option selected>Selectionnez ...</option>
                             {% for dep in departements %}
-                                <option {% if patient.nodep == dep.nodep %} selected {% endif %}value="{{ dep.nodep }}">{{ dep.nomdep }}</option>
+                                <option {% if patient.nodep == dep.nodep %} selected
+                                                                            {% endif %}value="{{ dep.nodep }}">{{ dep.nomdep }}</option>
                             {% endfor %}
                         </select>
                         {% if message.erreurs.departement %}
@@ -172,14 +211,14 @@
                         <div class="col-sm-10">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="sexe" id="gridRadios1"
-                                       value="F" checked>
+                                       value="F" {% if patient.sexe =='F'%}checked{%endif%}>
                                 <label class="form-check-label" for="gridRadios1">
                                     Femme
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="sexe" id="gridRadios2"
-                                       value="M">
+                                       value="M" {% if patient.sexe =='M'%}checked{%endif%}>
                                 <label class="form-check-label" for="gridRadios2">
                                     Homme
                                 </label>
@@ -187,6 +226,14 @@
                         </div>
                     </div>
                 </fieldset>
+                <input type="submit" class="btn btn-primary" value="Mettre à jour">
+                <a href="{{ path_for('voirPatient',{ numsecu: patient.num_secu }) }}" class="btn btn-danger">Annuler</a>
+            </form>
+        </div>
+        <div class="hidden form-modif-etat-patient">
+            <hr>
+            <h1>Modifier l'état de santé d'un patient</h1>
+            <form action="{{ path_for('modif_etat_patient',{numsecu: patient.num_secu}) }}" method="post">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="Etat_sante">Etat de santé</label>
@@ -205,7 +252,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="fin_surveillance">Fin surveillance (non obligatoire)</label>
+                        <label for="fin_surveillance">Fin surveillance (obligatoire si l'état de santé est "décédé")</label>
                         <input type="datetime-local"
                                class="form-control {% if message.erreurs.fin_surveillance %}border border-danger{% endif %}"
                                id="fin_surveillance" name="fin_surveillance">
@@ -215,10 +262,10 @@
                     </div>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Mettre à jour">
-                <a href="{{ path_for('voirPatient',{ numsecu: patient.num_secu }) }}" class="btn btn-danger">Annuler</a>
+                <a class="btn btn-danger">Annuler</a>
             </form>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     <HR>
     <h2>Historique hospitalisation</h2>
     {% for hosp in hospitalisations %}
@@ -273,7 +320,8 @@
     {% if not hospitalisations %}
         <div class="mb-2"> Il n'y a aucune hospitalisation pour ce patient</div>
     {% endif %}
-    {% if not currentHop and not patient.fin_surveillance and (patient.etat_sante == 'fièvre et pb respiratoires' or  patient.etat_sante == 'inconscient' or  patient.etat_sante == 'fièvre')%}
-        <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="btn btn-primary">Hospitaliser le patient</a>
+    {% if not currentHop and not patient.fin_surveillance and (patient.etat_sante == 'fièvre et pb respiratoires' or  patient.etat_sante == 'inconscient' or  patient.etat_sante == 'fièvre') %}
+        <a href="{{ path_for('hospitaliserPatient', {numsecu: patient.num_secu}) }}" class="btn btn-primary">Hospitaliser
+            le patient</a>
     {% endif %}
 {% endblock %}
