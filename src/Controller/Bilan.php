@@ -225,7 +225,9 @@ class Bilan
         }
         $stmt = $this->pdo->prepare("select count(to_char(fin_surveillance,'$format')),to_char(fin_surveillance,'$format') 
                                                                 from patient 
-                                                                group by to_char(fin_surveillance,'$format'),etat_sante having etat_sante='décédé'");
+                                                                group by to_char(fin_surveillance,'$format'),etat_sante
+                                                                having etat_sante='décédé'
+                                                                order by to_char(fin_surveillance,'$format')");
         $stmt->execute();
         $bilan['mort']['dates'];
         $bilan['mort']['nb'];
@@ -235,7 +237,9 @@ class Bilan
         }
         $stmt = $this->pdo->prepare("select count(to_char(fin_surveillance,'$format')),to_char(fin_surveillance,'$format')
                                                                 from patient 
-                                                                group by to_char(fin_surveillance,'$format'),etat_sante,fin_surveillance having etat_sante='aucun symptome' and fin_surveillance is not null");
+                                                                group by to_char(fin_surveillance,'$format'),etat_sante,fin_surveillance 
+                                                                having etat_sante='aucun symptome' and fin_surveillance is not null
+                                                                order by to_char(fin_surveillance,'$format')");
         $stmt->execute();
         $stmt->execute();
         $bilan['gueris']['dates'];

@@ -233,7 +233,7 @@
                     break;
             }
             let hosp ="";
-            if (patient.hospitalise){
+            if (!patient.hospitalise && patient.fin_surveillance == null && (patient.etat_sante !== 'aucun symptome')){
                 var url_hosp = '{{ path_for('hospitaliserPatient', {'numsecu': 'numsecu'}) }}';
                 url_hosp = url_hosp.replace('numsecu',patient.num_secu);
                 hosp="<a href=\""+url_hosp+"\" class=\"\">" +
@@ -262,6 +262,7 @@
                 "       <div class=\"info-etat-sante "+style_etat_sante+"\">"+patient.etat_sante+"</div>" +
                 "   </div>" +
                 "   <div class=\"col-2 controls\">" +
+                hosp +
                 "       <a href=\""+url_patient+"\" class=\"\">" +
                 "           <svg xmlns=\"http://www.w3.org/2000/svg\" id=\"Capa_1\" enable-background=\"new 0 0 524.235 524.235\"" +
                 "                height=\"512px\" viewBox=\"0 0 524.235 524.235\" width=\"512px\" class=\"icon\">" +
@@ -271,7 +272,6 @@
                 "               </g>" +
                 "           </svg>" +
                 "       </a>" +
-                    hosp +
                 "   </div>"+
                 "</div>"
             )
